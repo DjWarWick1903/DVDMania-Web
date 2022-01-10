@@ -1,9 +1,5 @@
 package ro.dvdmania.entities;
 
-import dvdmania.products.Album;
-import dvdmania.products.Game;
-import dvdmania.products.Movie;
-
 public class Stock {
 	private int idProduct;
 	private Movie movie;

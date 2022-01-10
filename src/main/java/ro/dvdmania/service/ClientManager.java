@@ -1,28 +1,29 @@
 package ro.dvdmania.service;
 
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import ro.dvdmania.entities.Account;
+import ro.dvdmania.entities.Client;
+
 public class ClientManager {
 
-	ConnectionManager connMan = ConnectionManager.getInstance();
+	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static ClientManager instance = null;
-
-	private ClientManager() {
-	}
 
 	public static ClientManager getInstance() {
 		if (instance == null) {
 			instance = new ClientManager();
 		}
-
 		return instance;
 	}
 
-	public Client getClientById(int id) {
+	public Client getClientById(final int id) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -30,37 +31,32 @@ public class ClientManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT nume, pren, adresa, oras, datan, cnp, tel, email, loialitate FROM clienti "
-					+ "WHERE id_cl=?";
+			final String sql = "SELECT nume, pren, adresa, oras, datan, cnp, tel, email, loialitate FROM clienti WHERE id_cl=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				String nume = result.getString("nume");
-				String prenume = result.getString("pren");
-				String adress = result.getString("adresa");
-				String oras = result.getString("oras");
-				LocalDate date = result.getDate("datan").toLocalDate();
-				String cnp = result.getString("cnp");
-				String tel = result.getString("tel");
-				String email = result.getString("email");
-				int loyal = result.getInt("loialitate");
+				final String nume = result.getString("nume");
+				final String prenume = result.getString("pren");
+				final String adress = result.getString("adresa");
+				final String oras = result.getString("oras");
+				final LocalDate date = result.getDate("datan").toLocalDate();
+				final String cnp = result.getString("cnp");
+				final String tel = result.getString("tel");
+				final String email = result.getString("email");
+				final int loyal = result.getInt("loialitate");
 
 				client = new Client(id, nume, prenume, adress, oras, date, cnp, tel, email, loyal);
 
-				AccountManager accMan = AccountManager.getInstance();
-				Account account = accMan.getClientAccount(client);
+				final AccountManager accMan = AccountManager.getInstance();
+				final Account account = accMan.getClientAccount(client);
 				client.setAccount(account);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return client;
@@ -70,53 +66,49 @@ public class ClientManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<Client> clientList = new ArrayList<>();
+		final ArrayList<Client> clientList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_cl, nume, pren, adresa, oras, datan, cnp, tel, email, loialitate FROM clienti";
+			final String sql = "SELECT id_cl, nume, pren, adresa, oras, datan, cnp, tel, email, loialitate FROM clienti";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int id = result.getInt("id_cl");
-				String nume = result.getString("nume");
-				String prenume = result.getString("pren");
-				String adress = result.getString("adresa");
-				String oras = result.getString("oras");
-				LocalDate date = result.getDate("datan").toLocalDate();
-				String cnp = result.getString("cnp");
-				String tel = result.getString("tel");
-				String email = result.getString("email");
-				int loyal = result.getInt("loialitate");
+				final int id = result.getInt("id_cl");
+				final String nume = result.getString("nume");
+				final String prenume = result.getString("pren");
+				final String adress = result.getString("adresa");
+				final String oras = result.getString("oras");
+				final LocalDate date = result.getDate("datan").toLocalDate();
+				final String cnp = result.getString("cnp");
+				final String tel = result.getString("tel");
+				final String email = result.getString("email");
+				final int loyal = result.getInt("loialitate");
 
-				Client client = new Client(id, nume, prenume, adress, oras, date, cnp, tel, email, loyal);
-				AccountManager accMan = AccountManager.getInstance();
-				Account account = accMan.getClientAccount(client);
+				final Client client = new Client(id, nume, prenume, adress, oras, date, cnp, tel, email, loyal);
+				final AccountManager accMan = AccountManager.getInstance();
+				final Account account = accMan.getClientAccount(client);
 				client.setAccount(account);
 				clientList.add(client);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return clientList;
 	}
 
-	public int createClient(Client client) {
+	public int createClient(final Client client) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int newKey = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO dvdmania.clienti " + "(nume, pren, adresa, oras, datan, cnp, tel, email) "
+			final String sql = "INSERT INTO dvdmania.clienti " + "(nume, pren, adresa, oras, datan, cnp, tel, email) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, client.getNume());
@@ -128,35 +120,32 @@ public class ClientManager {
 			statement.setString(7, client.getTel());
 			statement.setString(8, client.getEmail());
 
-			int rowsInserted = statement.executeUpdate();
+			final int rowsInserted = statement.executeUpdate();
 			if (rowsInserted != 0) {
-				ResultSet keySet = statement.getGeneratedKeys();
+				final ResultSet keySet = statement.getGeneratedKeys();
 				if (keySet.next()) {
 					newKey = keySet.getInt(1);
 					client.setId(newKey);
 				}
+				keySet.close();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return newKey;
 	}
 
-	public int updateClient(Client client) {
+	public int updateClient(final Client client) {
 		int rowsUpdated = 0;
 		Connection connection = null;
 		PreparedStatement statement = null;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.clienti SET nume=?, pren=?, adresa=?, oras=?, datan=?, cnp=?, tel=?, email=?, loialitate=? WHERE id_cl=?";
+			final String sql = "UPDATE dvdmania.clienti SET nume=?, pren=?, adresa=?, oras=?, datan=?, cnp=?, tel=?, email=?, loialitate=? WHERE id_cl=?";
 
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, client.getNume());
@@ -170,71 +159,59 @@ public class ClientManager {
 			statement.setInt(9, client.getLoialitate());
 			statement.setInt(10, client.getId());
 			rowsUpdated = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int rewardClient(Client client) {
+	public int rewardClient(final Client client) {
 		int rowsUpdated = 0;
 		Connection connection = null;
 		PreparedStatement statement = null;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.clienti SET loialitate=loialitate+1 WHERE id_cl=?";
+			final String sql = "UPDATE dvdmania.clienti SET loialitate=loialitate+1 WHERE id_cl=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, client.getId());
 			rowsUpdated = statement.executeUpdate();
 
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int punishClient(Client client) {
+	public int punishClient(final Client client) {
 		int rowsUpdated = 0;
 		Connection connection = null;
 		PreparedStatement statement = null;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.clienti SET loialitate=loialitate-1 WHERE id_cl=?";
+			final String sql = "UPDATE dvdmania.clienti SET loialitate=loialitate-1 WHERE id_cl=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, client.getId());
 			rowsUpdated = statement.executeUpdate();
 
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public String[] clientToRow(Client client) {
-		String[] row = new String[12];
+	public String[] clientToRow(final Client client) {
+		final String[] row = new String[12];
 		row[0] = client.getId() + "";
 		row[1] = client.getNume();
 		row[2] = client.getPrenume();

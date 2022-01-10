@@ -1,10 +1,5 @@
 package ro.dvdmania.entities;
 
-import dvdmania.management.Client;
-import dvdmania.management.Employee;
-import dvdmania.management.Stock;
-import dvdmania.management.Store;
-
 import java.time.LocalDate;
 
 public class Order {

@@ -1,30 +1,36 @@
 package ro.dvdmania.service;
 
-import dvdmania.management.*;
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ro.dvdmania.entities.Album;
+import ro.dvdmania.entities.Client;
+import ro.dvdmania.entities.Employee;
+import ro.dvdmania.entities.Game;
+import ro.dvdmania.entities.Movie;
+import ro.dvdmania.entities.Order;
+import ro.dvdmania.entities.Stock;
+import ro.dvdmania.entities.Store;
+
 public class OrderManager {
 
-	ConnectionManager connMan = ConnectionManager.getInstance();
+	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static OrderManager instance = null;
-
-	private OrderManager() {
-	}
 
 	public static OrderManager getInstance() {
 		if (instance == null) {
 			instance = new OrderManager();
 		}
-
 		return instance;
 	}
 
-	public int checkAvailability(Stock stock, Store store) {
+	public int checkAvailability(final Stock stock, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -32,7 +38,7 @@ public class OrderManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT COUNT(id_prod) FROM imprumuturi WHERE id_prod=? AND data_ret=NULL";
+			final String sql = "SELECT COUNT(id_prod) FROM imprumuturi WHERE id_prod=? AND data_ret=NULL";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, stock.getIdProduct());
 			result = statement.executeQuery();
@@ -40,20 +46,16 @@ public class OrderManager {
 			while (result.next()) {
 				results = result.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return results;
 	}
 
-	public int checkInOrder(Stock stock, Client client, LocalDate returnDate) {
+	public int checkInOrder(final Stock stock, final Client client, final LocalDate returnDate) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -67,6 +69,7 @@ public class OrderManager {
 			statement.setInt(2, client.getId());
 			statement.setObject(3, returnDate);
 			rowsUpdated = statement.executeUpdate();
+			statement.close();
 
 			if (rowsUpdated > 0) {
 				sql = "SELECT DATEDIFF(data_ret, data_imp) FROM imprumuturi WHERE id_prod=? AND id_cl=? AND data_imp=?";
@@ -80,29 +83,25 @@ public class OrderManager {
 					rowsUpdated = result.getInt(1);
 				}
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return rowsUpdated;
 	}
 
-	public LocalDate checkOutMovieOrder(Movie movie, Client client, Employee employee) {
+	public LocalDate checkOutMovieOrder(final Movie movie, final Client client, final Employee employee) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
 		LocalDate date = null;
 
-		StockManager stockMan = StockManager.getInstance();
-		Store store = new Store();
+		final StockManager stockMan = StockManager.getInstance();
+		final Store store = new Store();
 		store.setId(employee.getIdMag());
-		Stock stock = stockMan.getMovieStock(movie, store);
+		final Stock stock = stockMan.getMovieStock(movie, store);
 
 		try {
 			connection = connMan.openConnection();
@@ -114,6 +113,7 @@ public class OrderManager {
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
+			statement.close();
 
 			sql = "SELECT DATE_ADD(sysdate(), INTERVAL 7 day)";
 			statement = connection.prepareStatement(sql);
@@ -125,26 +125,22 @@ public class OrderManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return date;
 	}
 
-	public LocalDate checkOutGameOrder(Game game, Client client, Employee employee) {
+	public LocalDate checkOutGameOrder(final Game game, final Client client, final Employee employee) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
 		LocalDate date = null;
 
-		StockManager stockMan = StockManager.getInstance();
-		Store store = new Store();
+		final StockManager stockMan = StockManager.getInstance();
+		final Store store = new Store();
 		store.setId(employee.getIdMag());
-		Stock stock = stockMan.getGameStock(game, store);
+		final Stock stock = stockMan.getGameStock(game, store);
 
 		try {
 			connection = connMan.openConnection();
@@ -156,7 +152,8 @@ public class OrderManager {
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
-
+			statement.close();
+			
 			sql = "SELECT DATE_ADD(sysdate(), INTERVAL 7 day)";
 			statement = connection.prepareStatement(sql);
 			result = statement.executeQuery();
@@ -164,29 +161,25 @@ public class OrderManager {
 			while (result.next()) {
 				date = result.getDate(1).toLocalDate();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return date;
 	}
 
-	public LocalDate checkOutAlbumOrder(Album album, Client client, Employee employee) {
+	public LocalDate checkOutAlbumOrder(final Album album, final Client client, final Employee employee) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
 		LocalDate date = null;
 
-		StockManager stockMan = StockManager.getInstance();
-		Store store = new Store();
+		final StockManager stockMan = StockManager.getInstance();
+		final Store store = new Store();
 		store.setId(employee.getIdMag());
-		Stock stock = stockMan.getAlbumStock(album, store);
+		final Stock stock = stockMan.getAlbumStock(album, store);
 
 		try {
 			connection = connMan.openConnection();
@@ -198,6 +191,7 @@ public class OrderManager {
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
+			statement.close();
 
 			sql = "SELECT DATE_ADD(sysdate(), INTERVAL 7 day)";
 			statement = connection.prepareStatement(sql);
@@ -206,159 +200,143 @@ public class OrderManager {
 			while (result.next()) {
 				date = result.getDate(1).toLocalDate();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return date;
 	}
 
-	public ArrayList<Order> getStoreActiveOrders(Store store) {
+	public ArrayList<Order> getStoreActiveOrders(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Order> orderList = new ArrayList<>();
+		final ArrayList<Order> orderList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT i.id_prod, i.id_cl, i.id_angaj, i.data_imp, i.pret FROM imprumuturi i JOIN magazin m USING(id_mag) "
+			final String sql = "SELECT i.id_prod, i.id_cl, i.id_angaj, i.data_imp, i.pret FROM imprumuturi i JOIN magazin m USING(id_mag) "
 					+ "WHERE i.data_ret IS NULL AND m.id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
-			StockManager stockMan = StockManager.getInstance();
-			ClientManager clientMan = ClientManager.getInstance();
-			EmployeeManager empMan = EmployeeManager.getInstance();
+			final StockManager stockMan = StockManager.getInstance();
+			final ClientManager clientMan = ClientManager.getInstance();
+			final EmployeeManager empMan = EmployeeManager.getInstance();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idClient = result.getInt("id_cl");
-				int idEmp = result.getInt("id_angaj");
-				LocalDate date = result.getDate("data_imp").toLocalDate();
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idClient = result.getInt("id_cl");
+				final int idEmp = result.getInt("id_angaj");
+				final LocalDate date = result.getDate("data_imp").toLocalDate();
+				final int price = result.getInt("pret");
 
-				Stock stock = stockMan.getStockById(idStock);
-				Client client = clientMan.getClientById(idClient);
-				Employee emp = empMan.getEmployeeById(idEmp);
+				final Stock stock = stockMan.getStockById(idStock);
+				final Client client = clientMan.getClientById(idClient);
+				final Employee emp = empMan.getEmployeeById(idEmp);
 
-				Order order = new Order(stock, client, emp, store, date, null, price);
+				final Order order = new Order(stock, client, emp, store, date, null, price);
 				orderList.add(order);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return orderList;
 	}
 
-	public ArrayList<Order> getAllStoreOrders(Store store) {
+	public ArrayList<Order> getAllStoreOrders(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Order> orderList = new ArrayList<>();
+		final ArrayList<Order> orderList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_cl, id_angaj, data_imp, data_ret, pret FROM imprumuturi "
+			final String sql = "SELECT id_prod, id_cl, id_angaj, data_imp, data_ret, pret FROM imprumuturi "
 					+ "WHERE id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
-			StockManager stockMan = StockManager.getInstance();
-			ClientManager clientMan = ClientManager.getInstance();
-			EmployeeManager empMan = EmployeeManager.getInstance();
+			final StockManager stockMan = StockManager.getInstance();
+			final ClientManager clientMan = ClientManager.getInstance();
+			final EmployeeManager empMan = EmployeeManager.getInstance();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idClient = result.getInt("id_cl");
-				int idEmp = result.getInt("id_angaj");
-				LocalDate date = result.getDate("data_imp").toLocalDate();
-				LocalDate retDate = (result.getDate("data_ret") == null) ? null
+				final int idStock = result.getInt("id_prod");
+				final int idClient = result.getInt("id_cl");
+				final int idEmp = result.getInt("id_angaj");
+				final LocalDate date = result.getDate("data_imp").toLocalDate();
+				final LocalDate retDate = (result.getDate("data_ret") == null) ? null
 						: result.getDate("data_ret").toLocalDate();
-				int price = result.getInt("pret");
+				final int price = result.getInt("pret");
 
-				Stock stock = stockMan.getStockById(idStock);
-				Client client = clientMan.getClientById(idClient);
-				Employee emp = empMan.getEmployeeById(idEmp);
+				final Stock stock = stockMan.getStockById(idStock);
+				final Client client = clientMan.getClientById(idClient);
+				final Employee emp = empMan.getEmployeeById(idEmp);
 
-				Order order = new Order(stock, client, emp, store, date, retDate, price);
+				final Order order = new Order(stock, client, emp, store, date, retDate, price);
 				orderList.add(order);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return orderList;
 	}
 
-	public ArrayList<Order> getAllClientOrders(Client client) {
+	public ArrayList<Order> getAllClientOrders(final Client client) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Order> orderList = new ArrayList<>();
+		final ArrayList<Order> orderList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_mag, id_prod, id_angaj, data_imp, data_ret, pret FROM imprumuturi "
+			final String sql = "SELECT id_mag, id_prod, id_angaj, data_imp, data_ret, pret FROM imprumuturi "
 					+ "WHERE id_cl=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, client.getId());
 			result = statement.executeQuery();
 
-			StockManager stockMan = StockManager.getInstance();
-			StoreManager storeMan = StoreManager.getInstance();
-			EmployeeManager empMan = EmployeeManager.getInstance();
+			final StockManager stockMan = StockManager.getInstance();
+			final StoreManager storeMan = StoreManager.getInstance();
+			final EmployeeManager empMan = EmployeeManager.getInstance();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idStore = result.getInt("id_mag");
-				int idEmp = result.getInt("id_angaj");
-				LocalDate date = result.getDate("data_imp").toLocalDate();
-				LocalDate retDate = (result.getDate("data_ret") == null) ? null
+				final int idStock = result.getInt("id_prod");
+				final int idStore = result.getInt("id_mag");
+				final int idEmp = result.getInt("id_angaj");
+				final LocalDate date = result.getDate("data_imp").toLocalDate();
+				final LocalDate retDate = (result.getDate("data_ret") == null) ? null
 						: result.getDate("data_ret").toLocalDate();
-				int price = result.getInt("pret");
+				final int price = result.getInt("pret");
 
-				Stock stock = stockMan.getStockById(idStock);
-				Store store = storeMan.getStoreById(idStore);
-				Employee emp = empMan.getEmployeeById(idEmp);
+				final Stock stock = stockMan.getStockById(idStock);
+				final Store store = storeMan.getStoreById(idStore);
+				final Employee emp = empMan.getEmployeeById(idEmp);
 
-				Order order = new Order(stock, client, emp, store, date, retDate, price);
+				final Order order = new Order(stock, client, emp, store, date, retDate, price);
 				orderList.add(order);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return orderList;
 	}
 
-	public int getActiveOrders(int idStock, int idStore) {
+	public int getActiveOrders(final int idStock, final int idStore) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -366,7 +344,7 @@ public class OrderManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT COUNT(*) FROM imprumuturi " + "WHERE data_ret IS NULL AND id_prod=? AND id_mag=?";
+			final String sql = "SELECT COUNT(*) FROM imprumuturi " + "WHERE data_ret IS NULL AND id_prod=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, idStock);
 			statement.setInt(2, idStore);
@@ -375,21 +353,17 @@ public class OrderManager {
 			while (result.next()) {
 				orders = result.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return orders;
 	}
 
-	public String[] orderToRow(Order order) {
-		String[] row = new String[5];
+	public String[] orderToRow(final Order order) {
+		final String[] row = new String[5];
 		row[0] = order.getClient().getNume();
 		row[1] = order.getClient().getPrenume();
 		row[2] = order.getClient().getCnp();
@@ -399,11 +373,11 @@ public class OrderManager {
 		return row;
 	}
 
-	public ArrayList<Order> getOrdersByDates(LocalDate date1, LocalDate date2, Store oras) {
+	public ArrayList<Order> getOrdersByDates(final LocalDate date1, final LocalDate date2, final Store oras) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Order> orderList = new ArrayList<>();
+		final ArrayList<Order> orderList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
@@ -462,43 +436,39 @@ public class OrderManager {
 				}
 			}
 
-			StockManager stockMan = StockManager.getInstance();
-			ClientManager clientMan = ClientManager.getInstance();
-			EmployeeManager empMan = EmployeeManager.getInstance();
+			final StockManager stockMan = StockManager.getInstance();
+			final ClientManager clientMan = ClientManager.getInstance();
+			final EmployeeManager empMan = EmployeeManager.getInstance();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idClient = result.getInt("id_cl");
-				int idEmp = result.getInt("id_angaj");
-				LocalDate date = result.getDate("data_imp").toLocalDate();
-				LocalDate retDate = (result.getDate("data_ret") == null) ? null
+				final int idStock = result.getInt("id_prod");
+				final int idClient = result.getInt("id_cl");
+				final int idEmp = result.getInt("id_angaj");
+				final LocalDate date = result.getDate("data_imp").toLocalDate();
+				final LocalDate retDate = (result.getDate("data_ret") == null) ? null
 						: result.getDate("data_ret").toLocalDate();
-				int price = result.getInt("pret");
+				final int price = result.getInt("pret");
 
-				Store store;
+				final Store store;
 
 				if (oras == null) {
-					int storeId = result.getInt("id_mag");
+					final int storeId = result.getInt("id_mag");
 					store = StoreManager.getInstance().getStoreById(storeId);
 				} else {
 					store = oras;
 				}
 
-				Stock stock = stockMan.getStockById(idStock);
-				Client client = clientMan.getClientById(idClient);
-				Employee emp = empMan.getEmployeeById(idEmp);
+				final Stock stock = stockMan.getStockById(idStock);
+				final Client client = clientMan.getClientById(idClient);
+				final Employee emp = empMan.getEmployeeById(idEmp);
 
-				Order order = new Order(stock, client, emp, store, date, retDate, price);
+				final Order order = new Order(stock, client, emp, store, date, retDate, price);
 				orderList.add(order);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return orderList;
@@ -508,28 +478,24 @@ public class OrderManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		HashMap<String, Integer> orderTimeline = new HashMap<String, Integer>();
+		final HashMap<String, Integer> orderTimeline = new HashMap<String, Integer>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT YEAR(data_imp) AS An, COUNT(id_prod) AS Produse FROM imprumuturi GROUP BY YEAR(data_imp)";
+			final String sql = "SELECT YEAR(data_imp) AS An, COUNT(id_prod) AS Produse FROM imprumuturi GROUP BY YEAR(data_imp)";
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(sql);
 
 			while (resultSet.next()) {
-				String year = resultSet.getString("An");
-				int produse = resultSet.getInt("Produse");
+				final String year = resultSet.getString("An");
+				final int produse = resultSet.getInt("Produse");
 
-				orderTimeline.put(year, new Integer(produse));
+				orderTimeline.put(year, produse);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, resultSet);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, resultSet);
 		}
 
 		return orderTimeline;
@@ -539,30 +505,26 @@ public class OrderManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		HashMap<String, Integer> orderTimeline = new HashMap<String, Integer>();
+		final HashMap<String, Integer> orderTimeline = new HashMap<String, Integer>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT 'Filme' as Categorie, COUNT(id_film) as Produse FROM produse JOIN imprumuturi USING(id_prod) UNION "
+			final String sql = "SELECT 'Filme' as Categorie, COUNT(id_film) as Produse FROM produse JOIN imprumuturi USING(id_prod) UNION "
 					+ "SELECT 'Jocuri' as Categorie, COUNT(id_joc) as Produse FROM produse JOIN imprumuturi USING(id_prod) UNION "
 					+ "SELECT 'Albume' as Categorie, COUNT(id_album) as Produse FROM produse JOIN imprumuturi USING(id_prod)";
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(sql);
 
 			while (resultSet.next()) {
-				String cat = resultSet.getString("Categorie");
-				int produse = resultSet.getInt("Produse");
+				final String cat = resultSet.getString("Categorie");
+				final int produse = resultSet.getInt("Produse");
 
-				orderTimeline.put(cat, new Integer(produse));
+				orderTimeline.put(cat, produse);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, resultSet);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, resultSet);
 		}
 
 		return orderTimeline;

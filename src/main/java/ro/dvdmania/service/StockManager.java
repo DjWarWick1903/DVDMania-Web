@@ -1,25 +1,28 @@
 package ro.dvdmania.service;
 
-import dvdmania.products.*;
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import ro.dvdmania.entities.Album;
+import ro.dvdmania.entities.Game;
+import ro.dvdmania.entities.Movie;
+import ro.dvdmania.entities.Stock;
+import ro.dvdmania.entities.Store;
 
 public class StockManager {
 
 	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static StockManager instance = null;
 
-	private StockManager() {
-	}
-
 	public static StockManager getInstance() {
 		if (instance == null) {
 			instance = new StockManager();
 		}
-
 		return instance;
 	}
 
@@ -36,13 +39,13 @@ public class StockManager {
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idMovie = result.getInt("id_film");
-				int idGame = result.getInt("id_joc");
-				int idAlbum = result.getInt("id_album");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idMovie = result.getInt("id_film");
+				final int idGame = result.getInt("id_joc");
+				final int idAlbum = result.getInt("id_album");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
 				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -50,13 +53,13 @@ public class StockManager {
 				stock.setPrice(price);
 
 				if (idMovie != 0) {
-					MovieManager movieMan = MovieManager.getInstance();
+					final MovieManager movieMan = MovieManager.getInstance();
 					stock.setMovie(movieMan.getMovieById(idMovie));
 				} else if (idGame != 0) {
-					GameManager gameMan = GameManager.getInstance();
+					final GameManager gameMan = GameManager.getInstance();
 					stock.setGame(gameMan.getGameById(idGame));
 				} else if (idAlbum != 0) {
-					AlbumManager albumMan = AlbumManager.getInstance();
+					final AlbumManager albumMan = AlbumManager.getInstance();
 					stock.setAlbum(albumMan.getAlbumById(idAlbum));
 				}
 
@@ -65,20 +68,16 @@ public class StockManager {
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public ArrayList<Stock> getAllStock(Store store) {
+	public ArrayList<Stock> getAllStock(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -92,12 +91,12 @@ public class StockManager {
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idMovie = result.getInt("id_film");
-				int idGame = result.getInt("id_joc");
-				int idAlbum = result.getInt("id_album");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idMovie = result.getInt("id_film");
+				final int idGame = result.getInt("id_joc");
+				final int idAlbum = result.getInt("id_album");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
 				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -119,20 +118,16 @@ public class StockManager {
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public Stock getStockById(int id) {
+	public Stock getStockById(final int id) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -140,45 +135,41 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_film, id_joc, id_album, id_mag, cant, pret FROM produse " + "WHERE id_prod=?";
+			final String sql = "SELECT id_film, id_joc, id_album, id_mag, cant, pret FROM produse " + "WHERE id_prod=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idMovie = result.getInt(1);
-				int idGame = result.getInt(2);
-				int idAlbum = result.getInt(3);
-				int idStore = result.getInt(4);
-				int quantity = result.getInt(5);
-				int price = result.getInt(6);
+				final int idMovie = result.getInt(1);
+				final int idGame = result.getInt(2);
+				final int idAlbum = result.getInt(3);
+				final int idStore = result.getInt(4);
+				final int quantity = result.getInt(5);
+				final int price = result.getInt(6);
 
 				stock = new Stock();
 				stock.setIdProduct(id);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
 				if (idMovie != 0) {
-					MovieManager movieMan = MovieManager.getInstance();
+					final MovieManager movieMan = MovieManager.getInstance();
 					stock.setMovie(movieMan.getMovieById(idMovie));
 				} else if (idGame != 0) {
-					GameManager gameMan = GameManager.getInstance();
+					final GameManager gameMan = GameManager.getInstance();
 					stock.setGame(gameMan.getGameById(idGame));
 				} else if (idAlbum != 0) {
-					AlbumManager albumMan = AlbumManager.getInstance();
+					final AlbumManager albumMan = AlbumManager.getInstance();
 					stock.setAlbum(albumMan.getAlbumById(idAlbum));
 				}
 
-				StoreManager storeMan = StoreManager.getInstance();
+				final StoreManager storeMan = StoreManager.getInstance();
 				stock.setStore(storeMan.getStoreById(idStore));
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
@@ -197,11 +188,11 @@ public class StockManager {
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idMovie = result.getInt("id_film");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idMovie = result.getInt("id_film");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
 				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -216,17 +207,13 @@ public class StockManager {
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
-		Iterator iter = stockList.iterator();
+		final Iterator<Stock> iter = stockList.iterator();
 		while (iter.hasNext()) {
 			final Stock stock = (Stock) iter.next();
 			final MovieManager movieMan = MovieManager.getInstance();
@@ -242,56 +229,52 @@ public class StockManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<Stock> stockList = new ArrayList<>();
+		final ArrayList<Stock> stockList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_album, id_mag, cant, pret FROM produse WHERE id_album IS NOT NULL";
+			final String sql = "SELECT id_prod, id_album, id_mag, cant, pret FROM produse WHERE id_album IS NOT NULL";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idAlbum = result.getInt("id_album");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idAlbum = result.getInt("id_album");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
-				Stock stock = new Stock();
+				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
-				Album album = new Album();
+				final Album album = new Album();
 				album.setIdAlbum(idAlbum);
-				Store store = new Store();
+				final Store store = new Store();
 				store.setId(idStore);
 				stock.setAlbum(album);
 				stock.setStore(store);
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
-		Iterator iter = stockList.iterator();
+		final Iterator<Stock> iter = stockList.iterator();
 		while (iter.hasNext()) {
-			Stock stock = (Stock) iter.next();
+			final Stock stock = (Stock) iter.next();
 
-			AlbumManager albumMan = AlbumManager.getInstance();
+			final AlbumManager albumMan = AlbumManager.getInstance();
 			stock.setAlbum(albumMan.getAlbumById(stock.getAlbum().getIdAlbum()));
 
-			StoreManager storeMan = StoreManager.getInstance();
+			final StoreManager storeMan = StoreManager.getInstance();
 			stock.setStore(storeMan.getStoreById(stock.getStore().getId()));
 
-			SongManager songMan = SongManager.getInstance();
-			Album album = stock.getAlbum();
+			final SongManager songMan = SongManager.getInstance();
+			final Album album = stock.getAlbum();
 			album.setSongs(songMan.getSongs(album.getIdAlbum()));
 		}
 
@@ -302,189 +285,173 @@ public class StockManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<Stock> stockList = new ArrayList<>();
+		final ArrayList<Stock> stockList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_joc, id_mag, cant, pret FROM produse WHERE id_joc IS NOT NULL";
+			final String sql = "SELECT id_prod, id_joc, id_mag, cant, pret FROM produse WHERE id_joc IS NOT NULL";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idGame = result.getInt("id_joc");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idGame = result.getInt("id_joc");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
-				Stock stock = new Stock();
+				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
-				Game game = new Game();
+				final Game game = new Game();
 				game.setIdGame(idGame);
 				stock.setGame(game);
-				Store store = new Store();
+				final Store store = new Store();
 				store.setId(idStore);
 				stock.setStore(store);
 
-				GameManager gameMan = GameManager.getInstance();
+				final GameManager gameMan = GameManager.getInstance();
 				stock.setGame(gameMan.getGameById(idGame));
-				StoreManager storeMan = StoreManager.getInstance();
+				final StoreManager storeMan = StoreManager.getInstance();
 				stock.setStore(storeMan.getStoreById(idStore));
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public ArrayList<Stock> getAllMovieStock(Store store) {
+	public ArrayList<Stock> getAllMovieStock(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Stock> stockList = new ArrayList<>();
+		final ArrayList<Stock> stockList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_film, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_film IS NOT NULL";
+			final String sql = "SELECT id_prod, id_film, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_film IS NOT NULL";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idMovie = result.getInt("id_film");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idMovie = result.getInt("id_film");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
-				Stock stock = new Stock();
+				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
-				MovieManager movieMan = MovieManager.getInstance();
+				final MovieManager movieMan = MovieManager.getInstance();
 				stock.setMovie(movieMan.getMovieById(idMovie));
-				StoreManager storeMan = StoreManager.getInstance();
+				final StoreManager storeMan = StoreManager.getInstance();
 				stock.setStore(storeMan.getStoreById(idStore));
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public ArrayList<Stock> getAllAlbumStock(Store store) {
+	public ArrayList<Stock> getAllAlbumStock(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Stock> stockList = new ArrayList<>();
+		final ArrayList<Stock> stockList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_album, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_album IS NOT NULL";
+			final String sql = "SELECT id_prod, id_album, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_album IS NOT NULL";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idAlbum = result.getInt("id_album");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idAlbum = result.getInt("id_album");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
-				Stock stock = new Stock();
+				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
-				AlbumManager albumMan = AlbumManager.getInstance();
+				final AlbumManager albumMan = AlbumManager.getInstance();
 				stock.setAlbum(albumMan.getAlbumById(idAlbum));
-				StoreManager storeMan = StoreManager.getInstance();
+				final StoreManager storeMan = StoreManager.getInstance();
 				stock.setStore(storeMan.getStoreById(idStore));
 
-				SongManager songMan = SongManager.getInstance();
-				Album album = stock.getAlbum();
+				final SongManager songMan = SongManager.getInstance();
+				final Album album = stock.getAlbum();
 				album.setSongs(songMan.getSongs(album.getIdAlbum()));
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public ArrayList<Stock> getAllGameStock(Store store) {
+	public ArrayList<Stock> getAllGameStock(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Stock> stockList = new ArrayList<>();
+		final ArrayList<Stock> stockList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, id_joc, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_joc IS NOT NULL";
+			final String sql = "SELECT id_prod, id_joc, id_mag, cant, pret FROM produse WHERE id_mag=? AND id_joc IS NOT NULL";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt("id_prod");
-				int idGame = result.getInt("id_joc");
-				int idStore = result.getInt("id_mag");
-				int quantity = result.getInt("cant");
-				int price = result.getInt("pret");
+				final int idStock = result.getInt("id_prod");
+				final int idGame = result.getInt("id_joc");
+				final int idStore = result.getInt("id_mag");
+				final int quantity = result.getInt("cant");
+				final int price = result.getInt("pret");
 
-				Stock stock = new Stock();
+				final Stock stock = new Stock();
 				stock.setIdProduct(idStock);
 				stock.setQuantity(quantity);
 				stock.setPrice(price);
-				GameManager gameMan = GameManager.getInstance();
+				final GameManager gameMan = GameManager.getInstance();
 				stock.setGame(gameMan.getGameById(idGame));
-				StoreManager storeMan = StoreManager.getInstance();
+				final StoreManager storeMan = StoreManager.getInstance();
 				stock.setStore(storeMan.getStoreById(idStore));
 
 				stockList.add(stock);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stockList;
 	}
 
-	public Stock getMovieStock(Movie movie, Store store) {
+	public Stock getMovieStock(final Movie movie, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -492,16 +459,16 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_film=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_film=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, movie.getIdMovie());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt(1);
-				int quantity = result.getInt(2);
-				int price = result.getInt(3);
+				final int idStock = result.getInt(1);
+				final int quantity = result.getInt(2);
+				final int price = result.getInt(3);
 
 				stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -510,20 +477,16 @@ public class StockManager {
 				stock.setMovie(movie);
 				stock.setStore(store);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public Stock getGameStock(Game game, Store store) {
+	public Stock getGameStock(final Game game, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -531,16 +494,16 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_joc=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_joc=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt(1);
-				int quantity = result.getInt(2);
-				int price = result.getInt(3);
+				final int idStock = result.getInt(1);
+				final int quantity = result.getInt(2);
+				final int price = result.getInt(3);
 
 				stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -549,20 +512,16 @@ public class StockManager {
 				stock.setGame(game);
 				stock.setStore(store);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public Stock getAlbumStock(Album album, Store store) {
+	public Stock getAlbumStock(final Album album, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -570,16 +529,16 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_album=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant, pret FROM produse " + "WHERE id_album=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idStock = result.getInt(1);
-				int quantity = result.getInt(2);
-				int price = result.getInt(3);
+				final int idStock = result.getInt(1);
+				final int quantity = result.getInt(2);
+				final int price = result.getInt(3);
 
 				stock = new Stock();
 				stock.setIdProduct(idStock);
@@ -588,27 +547,23 @@ public class StockManager {
 				stock.setAlbum(album);
 				stock.setStore(store);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int insertMovieStock(Movie movie, Store store, int quantity, int price) {
+	public int insertMovieStock(final Movie movie, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO dvdmania.produse (id_film, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
+			final String sql = "INSERT INTO dvdmania.produse (id_film, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, movie.getIdMovie());
 			statement.setInt(2, store.getId());
@@ -616,27 +571,23 @@ public class StockManager {
 			statement.setInt(4, price);
 
 			rowsInserted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public int insertGameStock(Game game, Store store, int quantity, int price) {
+	public int insertGameStock(final Game game, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO dvdmania.produse (id_joc, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
+			final String sql = "INSERT INTO dvdmania.produse (id_joc, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			statement.setInt(2, store.getId());
@@ -644,27 +595,23 @@ public class StockManager {
 			statement.setInt(4, price);
 
 			rowsInserted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public int insertAlbumStock(Album album, Store store, int quantity, int price) {
+	public int insertAlbumStock(final Album album, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO dvdmania.produse (id_album, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
+			final String sql = "INSERT INTO dvdmania.produse (id_album, id_mag, cant, pret) VALUES (?, ?, ?, ?)";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			statement.setInt(2, store.getId());
@@ -672,27 +619,23 @@ public class StockManager {
 			statement.setInt(4, price);
 
 			rowsInserted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public int updateMovieStock(Movie movie, Store store, int quantity, int price) {
+	public int updateMovieStock(final Movie movie, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsUpdated = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_film=? AND id_mag=?";
+			final String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_film=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, quantity);
 			statement.setInt(2, price);
@@ -703,24 +646,20 @@ public class StockManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int updateGameStock(Game game, Store store, int quantity, int price) {
+	public int updateGameStock(final Game game, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsUpdated = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_joc=? AND id_mag=?";
+			final String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_joc=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, quantity);
 			statement.setInt(2, price);
@@ -728,27 +667,23 @@ public class StockManager {
 			statement.setInt(4, store.getId());
 
 			rowsUpdated = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int updateAlbumStock(Album album, Store store, int quantity, int price) {
+	public int updateAlbumStock(final Album album, final Store store, final int quantity, final int price) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsUpdated = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_album=? AND id_mag=?";
+			final String sql = "UPDATE dvdmania.produse SET cant=?, pret=? WHERE id_album=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, quantity);
 			statement.setInt(2, price);
@@ -756,27 +691,23 @@ public class StockManager {
 			statement.setInt(4, store.getId());
 
 			rowsUpdated = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int deleteMovieStock(Movie movie, Store store) {
+	public int deleteMovieStock(final Movie movie, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsDeleted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "DELETE FROM dvdmania.produse WHERE id_film=? AND id_mag=?";
+			final String sql = "DELETE FROM dvdmania.produse WHERE id_film=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, movie.getIdMovie());
 			statement.setInt(2, store.getId());
@@ -784,30 +715,26 @@ public class StockManager {
 			rowsDeleted = statement.executeUpdate();
 
 			if (checkMovieStock(movie) == 0) {
-				MovieManager movieMan = MovieManager.getInstance();
+				final MovieManager movieMan = MovieManager.getInstance();
 				movieMan.deleteMovie(movie);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsDeleted;
 	}
 
-	public int deleteGameStock(Game game, Store store) {
+	public int deleteGameStock(final Game game, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsDeleted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "DELETE FROM dvdmania.produse WHERE id_joc=? AND id_mag=?";
+			final String sql = "DELETE FROM dvdmania.produse WHERE id_joc=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			statement.setInt(2, store.getId());
@@ -815,30 +742,26 @@ public class StockManager {
 			rowsDeleted = statement.executeUpdate();
 
 			if (checkGameStock(game) == 0) {
-				GameManager gameMan = GameManager.getInstance();
+				final GameManager gameMan = GameManager.getInstance();
 				gameMan.deleteGame(game);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsDeleted;
 	}
 
-	public int deleteAlbumStock(Album album, Store store) {
+	public int deleteAlbumStock(final Album album, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsDeleted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "DELETE FROM dvdmania.produse WHERE id_album=? AND id_mag=?";
+			final String sql = "DELETE FROM dvdmania.produse WHERE id_album=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			statement.setInt(2, store.getId());
@@ -846,23 +769,19 @@ public class StockManager {
 			rowsDeleted = statement.executeUpdate();
 
 			if (checkAlbumStock(album) == 0) {
-				AlbumManager albumMan = AlbumManager.getInstance();
+				final AlbumManager albumMan = AlbumManager.getInstance();
 				albumMan.deleteAlbum(album);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsDeleted;
 	}
 
-	public int checkMovieStock(Movie movie) {
+	public int checkMovieStock(final Movie movie) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -870,7 +789,7 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT COUNT(*) FROM produse WHERE id_film=?";
+			final String sql = "SELECT COUNT(*) FROM produse WHERE id_film=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, movie.getIdMovie());
 			result = statement.executeQuery();
@@ -878,20 +797,16 @@ public class StockManager {
 			if (result.next()) {
 				stock = result.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int checkMovieStock(Movie movie, Store store) {
+	public int checkMovieStock(final Movie movie, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -899,39 +814,35 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant FROM produse WHERE id_film=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant FROM produse WHERE id_film=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, movie.getIdMovie());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idProd = result.getInt(1);
-				int quantity = result.getInt(2);
+				final int idProd = result.getInt(1);
+				final int quantity = result.getInt(2);
 
 				if (idProd == 0) {
 					break;
 				}
 
-				OrderManager orderMan = OrderManager.getInstance();
-				int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
+				final OrderManager orderMan = OrderManager.getInstance();
+				final int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
 
 				stock = quantity - activeOrders;
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int checkGameStock(Game game) {
+	public int checkGameStock(final Game game) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -939,7 +850,7 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT COUNT(*) FROM dvdmania.produse WHERE id_joc=?";
+			final String sql = "SELECT COUNT(*) FROM dvdmania.produse WHERE id_joc=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			result = statement.executeQuery();
@@ -947,20 +858,16 @@ public class StockManager {
 			if (result.next()) {
 				stock = result.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int checkGameStock(Game game, Store store) {
+	public int checkGameStock(final Game game, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -968,39 +875,35 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant FROM produse WHERE id_joc=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant FROM produse WHERE id_joc=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idProd = result.getInt(1);
-				int quantity = result.getInt(2);
+				final int idProd = result.getInt(1);
+				final int quantity = result.getInt(2);
 
 				if (idProd == 0) {
 					break;
 				}
 
-				OrderManager orderMan = OrderManager.getInstance();
-				int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
+				final OrderManager orderMan = OrderManager.getInstance();
+				final int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
 
 				stock = quantity - activeOrders;
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int checkAlbumStock(Album album) {
+	public int checkAlbumStock(final Album album) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -1008,7 +911,7 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT COUNT(*) FROM dvdmania.produse WHERE id_album=?";
+			final String sql = "SELECT COUNT(*) FROM dvdmania.produse WHERE id_album=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			result = statement.executeQuery();
@@ -1016,20 +919,16 @@ public class StockManager {
 			if (result.next()) {
 				stock = result.getInt(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;
 	}
 
-	public int checkAlbumStock(Album album, Store store) {
+	public int checkAlbumStock(final Album album, final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -1037,33 +936,29 @@ public class StockManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_prod, cant FROM produse WHERE id_album=? AND id_mag=?";
+			final String sql = "SELECT id_prod, cant FROM produse WHERE id_album=? AND id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			statement.setInt(2, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int idProd = result.getInt(1);
-				int quantity = result.getInt(2);
+				final int idProd = result.getInt(1);
+				final int quantity = result.getInt(2);
 
 				if (idProd == 0) {
 					break;
 				}
 
-				OrderManager orderMan = OrderManager.getInstance();
-				int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
+				final OrderManager orderMan = OrderManager.getInstance();
+				final int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
 
 				stock = quantity - activeOrders;
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return stock;

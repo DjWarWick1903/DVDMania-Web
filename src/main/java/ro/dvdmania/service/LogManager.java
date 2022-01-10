@@ -1,26 +1,20 @@
 package ro.dvdmania.service;
 
-import dvdmania.products.Movie;
-import dvdmania.tools.ConnectionManager;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import ro.dvdmania.entities.Employee;
+
 public class LogManager {
 
 	private final ConnectionManager connMan = ConnectionManager.getInstance();
-
 	private static LogManager instance = null;
-
-	private LogManager() {
-	}
 
 	public static LogManager getInstance() {
 		if (instance == null) {
 			instance = new LogManager();
 		}
-
 		return instance;
 	}
 
@@ -37,14 +31,10 @@ public class LogManager {
 			statement.setString(2, action);
 
 			rowsInserted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;

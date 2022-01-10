@@ -1,24 +1,25 @@
 package ro.dvdmania.service;
 
-import dvdmania.management.Store;
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+
+import ro.dvdmania.entities.Game;
+import ro.dvdmania.entities.Store;
 
 public class GameManager {
 
-	ConnectionManager connMan = ConnectionManager.getInstance();
+	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static GameManager instance = null;
-
-	private GameManager() {
-	}
 
 	public static GameManager getInstance() {
 		if (instance == null) {
 			instance = new GameManager();
 		}
-
 		return instance;
 	}
 
@@ -26,80 +27,73 @@ public class GameManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<Game> gameList = new ArrayList<>();
+		final ArrayList<Game> gameList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_joc, titlu, an, platforma, developer, publisher, gen, audienta FROM jocuri";
+			final String sql = "SELECT id_joc, titlu, an, platforma, developer, publisher, gen, audienta FROM jocuri";
+			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int id = result.getInt("id_joc");
-				String title = result.getString("titlu");
-				String platform = result.getString("platforma");
-				String developer = result.getString("developer");
-				String publisher = result.getString("publisher");
-				String genre = result.getString("gen");
-				int audience = result.getInt("audienta");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final int id = result.getInt("id_joc");
+				final String title = result.getString("titlu");
+				final String platform = result.getString("platforma");
+				final String developer = result.getString("developer");
+				final String publisher = result.getString("publisher");
+				final String genre = result.getString("gen");
+				final int audience = result.getInt("audienta");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
-				Game game = new Game(id, title, year, platform, developer, publisher, genre, audience);
+				final Game game = new Game(id, title, year, platform, developer, publisher, genre, audience);
 				gameList.add(game);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return gameList;
 	}
 
-	public ArrayList<Game> getGamesByStore(Store store) {
+	public ArrayList<Game> getGamesByStore(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Game> gameList = new ArrayList<>();
+		final ArrayList<Game> gameList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT j.id_joc, j.titlu, j.an, j.platforma, j.developer, j.publisher, j.gen, j.audienta FROM jocuri j "
+			final String sql = "SELECT j.id_joc, j.titlu, j.an, j.platforma, j.developer, j.publisher, j.gen, j.audienta FROM jocuri j "
 					+ "JOIN produse p ON p.id_joc=j.id_joc JOIN magazin m ON m.id_mag=p.id_mag WHERE m.id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int id = result.getInt("id_joc");
-				String title = result.getString("titlu");
-				String platform = result.getString("platforma");
-				String developer = result.getString("developer");
-				String publisher = result.getString("publisher");
-				String genre = result.getString("gen");
-				int audience = result.getInt("audienta");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final int id = result.getInt("id_joc");
+				final String title = result.getString("titlu");
+				final String platform = result.getString("platforma");
+				final String developer = result.getString("developer");
+				final String publisher = result.getString("publisher");
+				final String genre = result.getString("gen");
+				final int audience = result.getInt("audienta");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
-				Game game = new Game(id, title, year, platform, developer, publisher, genre, audience);
+				final Game game = new Game(id, title, year, platform, developer, publisher, genre, audience);
 				gameList.add(game);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return gameList;
 	}
 
-	public Game getGameByTitle(String title) {
+	public Game getGameByTitle(final String title) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -107,36 +101,32 @@ public class GameManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_joc, an, platforma, developer, publisher, gen, audienta FROM dvdmania.jocuri WHERE titlu=?";
-			connection.prepareStatement(sql);
+			final String sql = "SELECT id_joc, an, platforma, developer, publisher, gen, audienta FROM dvdmania.jocuri WHERE titlu=?";
+			statement = connection.prepareStatement(sql);
 			statement.setString(1, title);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int id = result.getInt("id_joc");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
-				String platform = result.getString("platforma");
-				String developer = result.getString("developer");
-				String publisher = result.getString("publisher");
-				String genre = result.getString("gen");
-				int audience = result.getInt("audienta");
+				final int id = result.getInt("id_joc");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final String platform = result.getString("platforma");
+				final String developer = result.getString("developer");
+				final String publisher = result.getString("publisher");
+				final String genre = result.getString("gen");
+				final int audience = result.getInt("audienta");
 
 				game = new Game(id, title, year, platform, developer, publisher, genre, audience);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return game;
 	}
 
-	public Game getGameById(int id) {
+	public Game getGameById(final int id) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -144,43 +134,39 @@ public class GameManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT titlu, an, platforma, developer, publisher, gen, audienta FROM jocuri WHERE id_joc=?";
+			final String sql = "SELECT titlu, an, platforma, developer, publisher, gen, audienta FROM jocuri WHERE id_joc=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				String title = result.getString("titlu");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
-				String platform = result.getString("platforma");
-				String developer = result.getString("developer");
-				String publisher = result.getString("publisher");
-				String genre = result.getString("gen");
-				int audience = result.getInt("audienta");
+				final String title = result.getString("titlu");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final String platform = result.getString("platforma");
+				final String developer = result.getString("developer");
+				final String publisher = result.getString("publisher");
+				final String genre = result.getString("gen");
+				final int audience = result.getInt("audienta");
 
 				game = new Game(id, title, year, platform, developer, publisher, genre, audience);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return game;
 	}
 
-	public int createGame(Game game) {
+	public int createGame(final Game game) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO jocuri (titlu, platforma, developer, publisher, gen, an, audienta) VALUES (?, ?, ?, ?, ?, YEAR(?), ?)";
+			final String sql = "INSERT INTO jocuri (titlu, platforma, developer, publisher, gen, an, audienta) VALUES (?, ?, ?, ?, ?, YEAR(?), ?)";
 			statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, game.getTitle());
 			statement.setString(2, game.getPlatform());
@@ -191,32 +177,29 @@ public class GameManager {
 			statement.setInt(7, game.getAudience());
 			rowsInserted = statement.executeUpdate();
 
-			ResultSet keySet = statement.getGeneratedKeys();
+			final ResultSet keySet = statement.getGeneratedKeys();
 			while (keySet.next()) {
-				int id = keySet.getInt(1);
+				final int id = keySet.getInt(1);
 				game.setIdGame(id);
 			}
-		} catch (SQLException e) {
+			keySet.close();
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public int updateGame(Game game) {
+	public int updateGame(final Game game) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsUpdated = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.jocuri SET titlu=?, platforma=?, developer=?, publisher=?, gen=?, an=YEAR(?), audienta=? WHERE id_joc=?";
+			final String sql = "UPDATE dvdmania.jocuri SET titlu=?, platforma=?, developer=?, publisher=?, gen=?, an=YEAR(?), audienta=? WHERE id_joc=?";
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, game.getTitle());
 			statement.setString(2, game.getPlatform());
@@ -227,38 +210,30 @@ public class GameManager {
 			statement.setInt(7, game.getAudience());
 			statement.setInt(8, game.getIdGame());
 			rowsUpdated = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int deleteGame(Game game) {
+	public int deleteGame(final Game game) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsDeleted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "DELETE FROM dvdmania.jocuri WHERE id_joc=?";
-			connection.prepareStatement(sql);
+			final String sql = "DELETE FROM dvdmania.jocuri WHERE id_joc=?";
+			statement = connection.prepareStatement(sql);
 			statement.setInt(1, game.getIdGame());
 			rowsDeleted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsDeleted;
@@ -268,11 +243,11 @@ public class GameManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<String> genres = new ArrayList<>();
+		final ArrayList<String> genres = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT DISTINCT gen FROM dvdmania.jocuri";
+			final String sql = "SELECT DISTINCT gen FROM dvdmania.jocuri";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
@@ -280,21 +255,17 @@ public class GameManager {
 			while (result.next()) {
 				genres.add(result.getString(1));
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return genres;
 	}
 
-	public String[] gameToRow(Game game, int price) {
-		String[] row = new String[9];
+	public String[] gameToRow(final Game game, final int price) {
+		final String[] row = new String[9];
 		row[0] = game.getIdGame() + "";
 		row[1] = game.getTitle();
 		row[2] = game.getPlatform();

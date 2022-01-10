@@ -1,24 +1,25 @@
 package ro.dvdmania.service;
 
-import dvdmania.management.Store;
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+
+import ro.dvdmania.entities.Album;
+import ro.dvdmania.entities.Store;
 
 public class AlbumManager {
 
-	ConnectionManager connMan = ConnectionManager.getInstance();
+	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static AlbumManager instance = null;
-
-	private AlbumManager() {
-	}
 
 	public static AlbumManager getInstance() {
 		if (instance == null) {
 			instance = new AlbumManager();
 		}
-
 		return instance;
 	}
 
@@ -26,79 +27,71 @@ public class AlbumManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<Album> albumList = new ArrayList<>();
+		final ArrayList<Album> albumList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_album, trupa, titlu, nr_mel, casa_disc, gen, an FROM albume";
+			final String sql = "SELECT id_album, trupa, titlu, nr_mel, casa_disc, gen, an FROM albume";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int id = result.getInt("id_album");
-				String artist = result.getString("trupa");
-				String title = result.getString("titlu");
-				int nrSongs = result.getInt("nr_mel");
-				String publisher = result.getString("casa_disc");
-				String genre = result.getString("gen");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final int id = result.getInt("id_album");
+				final String artist = result.getString("trupa");
+				final String title = result.getString("titlu");
+				final int nrSongs = result.getInt("nr_mel");
+				final String publisher = result.getString("casa_disc");
+				final String genre = result.getString("gen");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
-				Album album = new Album(id, artist, title, nrSongs, genre, publisher, year);
+				final Album album = new Album(id, artist, title, nrSongs, genre, publisher, year);
 				albumList.add(album);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return albumList;
 	}
 
-	public ArrayList<Album> getAlbumsByStore(Store store) {
+	public ArrayList<Album> getAlbumsByStore(final Store store) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		ArrayList<Album> albumList = new ArrayList<>();
+		final ArrayList<Album> albumList = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT a.id_album, a.trupa, a.titlu, a.nr_mel, a.casa_disc, a.gen, a.an FROM albume a "
+			final String sql = "SELECT a.id_album, a.trupa, a.titlu, a.nr_mel, a.casa_disc, a.gen, a.an FROM albume a "
 					+ "JOIN produse p ON a.id_album=p.id_album JOIN magazin m ON m.id_mag=p.id_mag WHERE m.id_mag=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, store.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int id = result.getInt("id_album");
-				String artist = result.getString("trupa");
-				String title = result.getString("titlu");
-				int nrSongs = result.getInt("nr_mel");
-				String publisher = result.getString("casa_disc");
-				String genre = result.getString("gen");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final int id = result.getInt("id_album");
+				final String artist = result.getString("trupa");
+				final String title = result.getString("titlu");
+				final int nrSongs = result.getInt("nr_mel");
+				final String publisher = result.getString("casa_disc");
+				final String genre = result.getString("gen");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
-				Album album = new Album(id, artist, title, nrSongs, genre, publisher, year);
+				final Album album = new Album(id, artist, title, nrSongs, genre, publisher, year);
 				albumList.add(album);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return albumList;
 	}
 
-	public Album getAlbumByTitle(String title) {
+	public Album getAlbumByTitle(final String title) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -106,35 +99,31 @@ public class AlbumManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT id_album, trupa, nr_mel, casa_disc, gen, an FROM dvdmania.jocuri WHERE titlu=?";
-			connection.prepareStatement(sql);
+			final String sql = "SELECT id_album, trupa, nr_mel, casa_disc, gen, an FROM dvdmania.jocuri WHERE titlu=?";
+			statement = connection.prepareStatement(sql);
 			statement.setString(1, title);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				int id = result.getInt("id_album");
-				String artist = result.getString("trupa");
-				int nrSongs = result.getInt("nr_mel");
-				String publisher = result.getString("casa_disc");
-				String genre = result.getString("gen");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final int id = result.getInt("id_album");
+				final String artist = result.getString("trupa");
+				final int nrSongs = result.getInt("nr_mel");
+				final String publisher = result.getString("casa_disc");
+				final String genre = result.getString("gen");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
 				album = new Album(id, artist, title, nrSongs, genre, publisher, year);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return album;
 	}
 
-	public Album getAlbumById(int id) {
+	public Album getAlbumById(final int id) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -142,42 +131,38 @@ public class AlbumManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT titlu, trupa, nr_mel, casa_disc, gen, an FROM albume WHERE id_album=?";
+			final String sql = "SELECT titlu, trupa, nr_mel, casa_disc, gen, an FROM albume WHERE id_album=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, id);
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				String title = result.getString("titlu");
-				String artist = result.getString("trupa");
-				int nrSongs = result.getInt("nr_mel");
-				String publisher = result.getString("casa_disc");
-				String genre = result.getString("gen");
-				String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
+				final String title = result.getString("titlu");
+				final String artist = result.getString("trupa");
+				final int nrSongs = result.getInt("nr_mel");
+				final String publisher = result.getString("casa_disc");
+				final String genre = result.getString("gen");
+				final String year = (String.valueOf(result.getDate("an"))).substring(0, 4);
 
 				album = new Album(id, artist, title, nrSongs, genre, publisher, year);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return album;
 	}
 
-	public int createAlbum(Album album) {
+	public int createAlbum(final Album album) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO albume (titlu, trupa, nr_mel , casa_disc, gen, an) VALUES (?, ?, ?, ?, ?, YEAR(?))";
+			final String sql = "INSERT INTO albume (titlu, trupa, nr_mel , casa_disc, gen, an) VALUES (?, ?, ?, ?, ?, YEAR(?))";
 			statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setString(1, album.getTitle());
 			statement.setString(2, album.getArtist());
@@ -188,32 +173,29 @@ public class AlbumManager {
 
 			rowsInserted = statement.executeUpdate();
 			if (rowsInserted > 0) {
-				ResultSet keySet = statement.getGeneratedKeys();
+				final ResultSet keySet = statement.getGeneratedKeys();
 				if (keySet.next()) {
 					album.setIdAlbum(keySet.getInt(1));
 				}
+				keySet.close();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public int updateAlbum(Album album) {
+	public int updateAlbum(final Album album) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsUpdated = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.albume SET titlu=?, trupa=?, nr_mel=?, casa_disc=?, gen=?, an=YEAR(?) WHERE id_album=?";
+			final String sql = "UPDATE dvdmania.albume SET titlu=?, trupa=?, nr_mel=?, casa_disc=?, gen=?, an=YEAR(?) WHERE id_album=?";
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, album.getTitle());
 			statement.setString(2, album.getArtist());
@@ -224,38 +206,30 @@ public class AlbumManager {
 			statement.setInt(7, album.getIdAlbum());
 			rowsUpdated = statement.executeUpdate();
 
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsUpdated;
 	}
 
-	public int deleteAlbum(Album album) {
+	public int deleteAlbum(final Album album) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsDeleted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "DELETE FROM dvdmania.albume WHERE id_album=?";
-			connection.prepareStatement(sql);
+			final String sql = "DELETE FROM dvdmania.albume WHERE id_album=?";
+			statement = connection.prepareStatement(sql);
 			statement.setInt(1, album.getIdAlbum());
 			rowsDeleted = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsDeleted;
@@ -265,24 +239,21 @@ public class AlbumManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<String> albumNames = new ArrayList<>();
+		final ArrayList<String> albumNames = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT titlu FROM dvdmania.albume";
+			final String sql = "SELECT titlu FROM dvdmania.albume";
+			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
 				albumNames.add(result.getString(1));
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return albumNames;
@@ -292,11 +263,11 @@ public class AlbumManager {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
-		ArrayList<String> genres = new ArrayList<>();
+		final ArrayList<String> genres = new ArrayList<>();
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT DISTINCT gen FROM dvdmania.albume";
+			final String sql = "SELECT DISTINCT gen FROM dvdmania.albume";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
@@ -304,21 +275,17 @@ public class AlbumManager {
 			while (result.next()) {
 				genres.add(result.getString(1));
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return genres;
 	}
 
-	public String[] albumToRow(Album album, int price) {
-		String[] row = new String[8];
+	public String[] albumToRow(final Album album, final int price) {
+		final String[] row = new String[8];
 		row[0] = album.getIdAlbum() + "";
 		row[1] = album.getArtist();
 		row[2] = album.getTitle();

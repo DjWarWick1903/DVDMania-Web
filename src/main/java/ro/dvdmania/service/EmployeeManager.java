@@ -1,36 +1,38 @@
 package ro.dvdmania.service;
 
-import dvdmania.tools.ConnectionManager;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import ro.dvdmania.entities.Account;
+import ro.dvdmania.entities.Employee;
+import ro.dvdmania.entities.Store;
+
 public class EmployeeManager {
 
-	ConnectionManager connMan = ConnectionManager.getInstance();
+	private final ConnectionManager connMan = ConnectionManager.getInstance();
 	private static EmployeeManager instance = null;
-
-	private EmployeeManager() {
-	}
 
 	public static EmployeeManager getInstance() {
 		if (instance == null) {
 			instance = new EmployeeManager();
 		}
-
 		return instance;
 	}
 
-	public int createEmployee(Employee employee) {
+	public int createEmployee(final Employee employee) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int newKey = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "INSERT INTO angajati(nume, pren, adresa, oras, "
-					+ "datan, cnp, tel, email, functie, salariu, activ, id_mag) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+			final String sql = "INSERT INTO angajati(nume, pren, adresa, oras, "
+					+ "datan, cnp, tel, email, functie, salariu, activ, id_mag) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 			statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, employee.getNume());
 			statement.setString(2, employee.getPrenume());
@@ -45,37 +47,33 @@ public class EmployeeManager {
 			statement.setString(11, "Activ");
 			statement.setInt(12, employee.getIdMag());
 
-			int rowsInserted = statement.executeUpdate();
+			final int rowsInserted = statement.executeUpdate();
 			if (rowsInserted != 0) {
-				ResultSet keySet = statement.getGeneratedKeys();
+				final ResultSet keySet = statement.getGeneratedKeys();
 				if (keySet.next()) {
 					newKey = keySet.getInt(1);
 					employee.setIdEmp(newKey);
 				}
+				keySet.close();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return newKey;
 	}
 
-	public int updateEmployee(Employee employee) {
+	public int updateEmployee(final Employee employee) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		int rowsInserted = 0;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE dvdmania.angajati SET nume=?, pren=?, adresa=?, oras=?, "
-					+ "datan=?, cnp=?, tel=?, email=?, functie=?, salariu=?, activ=?, " + "id_mag=? WHERE id_angaj='"
-					+ employee.getIdMag() + "'";
+			final String sql = "UPDATE dvdmania.angajati SET nume=?, pren=?, adresa=?, oras=?, "
+					+ "datan=?, cnp=?, tel=?, email=?, functie=?, salariu=?, activ=?, " + "id_mag=? WHERE id_angaj=?";
 
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, employee.getNume());
@@ -94,22 +92,19 @@ public class EmployeeManager {
 				statement.setString(11, "Inactiv");
 			}
 			statement.setInt(12, employee.getIdMag());
+			statement.setInt(13, employee.getIdMag());
 
 			rowsInserted = statement.executeUpdate();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return rowsInserted;
 	}
 
-	public Employee getEmployeeById(int id) {
+	public Employee getEmployeeById(final int id) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -117,7 +112,7 @@ public class EmployeeManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT a.nume, a.pren, a.adresa, a.oras, a.datan, "
+			final String sql = "SELECT a.nume, a.pren, a.adresa, a.oras, a.datan, "
 					+ "a.cnp, a.tel, a.email, a.functie, a.salariu, m.id_mag FROM angajati a "
 					+ "JOIN magazin m ON m.id_mag=a.id_mag WHERE a.activ='Activ' AND a.id_angaj=?";
 			statement = connection.prepareStatement(sql);
@@ -125,95 +120,87 @@ public class EmployeeManager {
 			result = statement.executeQuery();
 
 			while (result.next()) {
-				String nume = result.getString("nume");
-				String prenume = result.getString("pren");
-				String adresa = result.getString("adresa");
-				String oras = result.getString("oras");
-				LocalDate datan = result.getDate("datan").toLocalDate();
-				String cnp = result.getString("cnp");
-				String telefon = result.getString("tel");
-				String email = result.getString("email");
-				String functie = result.getString("functie");
-				int salariu = result.getInt("salariu");
-				int idMag = result.getInt("id_mag");
+				final String nume = result.getString("nume");
+				final String prenume = result.getString("pren");
+				final String adresa = result.getString("adresa");
+				final String oras = result.getString("oras");
+				final LocalDate datan = result.getDate("datan").toLocalDate();
+				final String cnp = result.getString("cnp");
+				final String telefon = result.getString("tel");
+				final String email = result.getString("email");
+				final String functie = result.getString("functie");
+				final int salariu = result.getInt("salariu");
+				final int idMag = result.getInt("id_mag");
 
-				emp = new Employee(id, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true,
-						idMag);
-				AccountManager accMan = AccountManager.getInstance();
-				Account account = accMan.getEmployeeAccount(emp);
+				emp = new Employee(id, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true,idMag);
+				final AccountManager accMan = AccountManager.getInstance();
+				final Account account = accMan.getEmployeeAccount(emp);
 				emp.setAccount(account);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return emp;
 	}
 
 	public ArrayList<Employee> getEmployees() {
-		ArrayList<Employee> employees = new ArrayList<>();
+		final ArrayList<Employee> employees = new ArrayList<>();
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT a.id_angaj, a.nume, a.pren, a.adresa, a.oras, a.datan, "
+			final String sql = "SELECT a.id_angaj, a.nume, a.pren, a.adresa, a.oras, a.datan, "
 					+ "a.cnp, a.tel, a.email, a.functie, a.salariu, m.id_mag FROM dvdmania.angajati a, "
 					+ "dvdmania.magazin m WHERE m.id_mag=a.id_mag AND a.activ='Activ'";
 			statement = connection.createStatement();
 			result = statement.executeQuery(sql);
 
 			while (result.next()) {
-				int idEmp = result.getInt("id_angaj");
-				String nume = result.getString("nume");
-				String prenume = result.getString("pren");
-				String adresa = result.getString("adresa");
-				String oras = result.getString("oras");
-				LocalDate datan = result.getDate("datan").toLocalDate();
-				String cnp = result.getString("cnp");
-				String telefon = result.getString("tel");
-				String email = result.getString("email");
-				String functie = result.getString("functie");
-				int salariu = result.getInt("salariu");
-				int idMag = result.getInt("id_mag");
-				Employee employee = new Employee(idEmp, nume, prenume, adresa, oras, datan, cnp, telefon, email,
+				final int idEmp = result.getInt("id_angaj");
+				final String nume = result.getString("nume");
+				final String prenume = result.getString("pren");
+				final String adresa = result.getString("adresa");
+				final String oras = result.getString("oras");
+				final LocalDate datan = result.getDate("datan").toLocalDate();
+				final String cnp = result.getString("cnp");
+				final String telefon = result.getString("tel");
+				final String email = result.getString("email");
+				final String functie = result.getString("functie");
+				final int salariu = result.getInt("salariu");
+				final int idMag = result.getInt("id_mag");
+				final Employee employee = new Employee(idEmp, nume, prenume, adresa, oras, datan, cnp, telefon, email,
 						functie, salariu, true, idMag);
 
-				AccountManager accMan = AccountManager.getInstance();
-				Account account = accMan.getEmployeeAccount(employee);
+				final AccountManager accMan = AccountManager.getInstance();
+				final Account account = accMan.getEmployeeAccount(employee);
 				employee.setAccount(account);
 
 				employees.add(employee);
 			}
 
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement, result);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement, result);
 		}
 
 		return employees;
 	}
 
-	public String getEmployeePost(String cnp) {
+	public String getEmployeePost(final String cnp) {
 		String post = new String();
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
 
 		try {
-			String sql = "SELECT functie FROM dvdmania.angajati WHERE cnp=?";
+			connection = connMan.openConnection();
+			final String sql = "SELECT functie FROM dvdmania.angajati WHERE cnp=?";
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, cnp);
 			result = statement.executeQuery();
@@ -221,20 +208,16 @@ public class EmployeeManager {
 			while (result.next()) {
 				post = result.getString(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return post;
 	}
 
-	public String getEmployeeEmail(String cnp) {
+	public String getEmployeeEmail(final String cnp) {
 		String email = new String();
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -242,7 +225,7 @@ public class EmployeeManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "SELECT email FROM dvdmania.angajati WHERE cnp=?";
+			final String sql = "SELECT email FROM dvdmania.angajati WHERE cnp=?";
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, cnp);
 			result = statement.executeQuery();
@@ -250,21 +233,17 @@ public class EmployeeManager {
 			while (result.next()) {
 				email = result.getString(1);
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				connMan.closeConnection(connection, statement);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			connMan.closeConnection(connection, statement);
 		}
 
 		return email;
 	}
 
-	public String[] employeeToRow(Employee employee) {
-		String[] row = new String[14];
+	public String[] employeeToRow(final Employee employee) {
+		final String[] row = new String[14];
 		row[0] = employee.getIdEmp() + "";
 		row[1] = employee.getNume();
 		row[2] = employee.getPrenume();
@@ -276,8 +255,8 @@ public class EmployeeManager {
 		row[8] = employee.getEmail();
 		row[9] = employee.getFunctie();
 		row[10] = employee.getSalariu() + "";
-		StoreManager storeMan = StoreManager.getInstance();
-		Store store = storeMan.getStoreById(employee.getIdMag());
+		final StoreManager storeMan = StoreManager.getInstance();
+		final Store store = storeMan.getStoreById(employee.getIdMag());
 		row[11] = store.getOras();
 		row[12] = employee.getAccount().getUsername();
 		row[13] = employee.getAccount().getPassword();

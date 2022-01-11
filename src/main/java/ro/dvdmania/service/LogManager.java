@@ -27,7 +27,7 @@ public class LogManager {
 			connection = connMan.openConnection();
 			final String sql = "INSERT INTO log (id_angajat, action, data) VALUES (?, ?, SYSDATE())";
 			statement = connection.prepareStatement(sql);
-			statement.setInt(1, employee.getIdEmp());
+			statement.setInt(1, employee.getId());
 			statement.setString(2, action);
 
 			rowsInserted = statement.executeUpdate();

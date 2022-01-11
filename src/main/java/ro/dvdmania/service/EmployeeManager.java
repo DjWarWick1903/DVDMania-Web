@@ -40,7 +40,7 @@ public class EmployeeManager {
 			statement.setString(4, employee.getOras());
 			statement.setObject(5, employee.getDatan());
 			statement.setString(6, employee.getCnp());
-			statement.setString(7, employee.getTelefon());
+			statement.setString(7, employee.getTel());
 			statement.setString(8, employee.getEmail());
 			statement.setString(9, employee.getFunctie());
 			statement.setInt(10, employee.getSalariu());
@@ -52,7 +52,7 @@ public class EmployeeManager {
 				final ResultSet keySet = statement.getGeneratedKeys();
 				if (keySet.next()) {
 					newKey = keySet.getInt(1);
-					employee.setIdEmp(newKey);
+					employee.setId(newKey);
 				}
 				keySet.close();
 			}
@@ -82,7 +82,7 @@ public class EmployeeManager {
 			statement.setString(4, employee.getOras());
 			statement.setObject(5, employee.getDatan());
 			statement.setString(6, employee.getCnp());
-			statement.setString(7, employee.getTelefon());
+			statement.setString(7, employee.getTel());
 			statement.setString(8, employee.getEmail());
 			statement.setString(9, employee.getFunctie());
 			statement.setInt(10, employee.getSalariu());
@@ -244,14 +244,14 @@ public class EmployeeManager {
 
 	public String[] employeeToRow(final Employee employee) {
 		final String[] row = new String[14];
-		row[0] = employee.getIdEmp() + "";
+		row[0] = employee.getId() + "";
 		row[1] = employee.getNume();
 		row[2] = employee.getPrenume();
 		row[3] = employee.getAdresa();
 		row[4] = employee.getOras();
 		row[5] = employee.getDatan().toString();
 		row[6] = employee.getCnp();
-		row[7] = employee.getTelefon();
+		row[7] = employee.getTel();
 		row[8] = employee.getEmail();
 		row[9] = employee.getFunctie();
 		row[10] = employee.getSalariu() + "";

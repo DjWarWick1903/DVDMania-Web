@@ -109,7 +109,7 @@ public class OrderManager {
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
-			statement.setInt(3, employee.getIdEmp());
+			statement.setInt(3, employee.getId());
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
@@ -148,7 +148,7 @@ public class OrderManager {
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
-			statement.setInt(3, employee.getIdEmp());
+			statement.setInt(3, employee.getId());
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
@@ -187,7 +187,7 @@ public class OrderManager {
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
-			statement.setInt(3, employee.getIdEmp());
+			statement.setInt(3, employee.getId());
 			statement.setInt(4, employee.getIdMag());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();

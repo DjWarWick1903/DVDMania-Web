@@ -1,14 +1,27 @@
 package ro.dvdmania.service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ConnectionManager {
 
 	private static ConnectionManager instance = null;
+	private static final String CONNECTION = "jdbc:mysql://localhost:3306/dvdmania";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "robertmaster1";
 
 	public static ConnectionManager getInstance() {
 		if (instance == null) {
@@ -19,12 +32,19 @@ public class ConnectionManager {
 
 	public Connection openConnection() throws SQLException {
 		Connection myConn = null;
-		final String[] array = readFromFile();
-
-		if (array[0] != null && array[1] != null && array[2] != null) {
-			myConn = DriverManager.getConnection(array[0], array[1], array[2]);
+		try {
+			
+			/*
+			 * final String[] array = readFromFile();
+			 * 
+			 * if (array[0] != null && array[1] != null && array[2] != null) { myConn =
+			 * DriverManager.getConnection(array[0], array[1], array[2]); }
+			 */
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			myConn = DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD);
+		} catch (final Exception e) {
+			e.printStackTrace();
 		}
-
 		return myConn;
 	}
 

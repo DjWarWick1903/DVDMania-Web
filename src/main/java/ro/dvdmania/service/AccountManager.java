@@ -150,7 +150,7 @@ public class AccountManager {
 			connection = connMan.openConnection();
 			final String sql = "SELECT id_cont, util, parola, data_creat FROM conturi WHERE id_angaj=?";
 			statement = connection.prepareStatement(sql);
-			statement.setInt(1, employee.getIdEmp());
+			statement.setInt(1, employee.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {
@@ -159,7 +159,7 @@ public class AccountManager {
 				final String password = result.getString(3);
 				final LocalDate date = result.getDate(4).toLocalDate();
 
-				account = new Account(id, username, password, date, 1, employee.getIdEmp());
+				account = new Account(id, username, password, date, 1, employee.getId());
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -240,23 +240,24 @@ public class AccountManager {
 		return newKey;
 	}
 
-	public boolean checkAccountExists(final Account account) {
+	public boolean checkAccountExists(Account account) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		boolean isCorrect = false;
+		boolean exists = false;
 
 		try {
 			connection = connMan.openConnection();
 			if (connection != null) {
-				final String sql = "SELECT util, parola " + "FROM conturi " + "WHERE util = ? AND parola = ?";
+				final String sql = "SELECT util, parola FROM conturi WHERE util = ? AND parola = ?";
 				statement = connection.prepareStatement(sql);
 				statement.setString(1, account.getUsername());
 				statement.setString(2, account.getPassword());
 				result = statement.executeQuery();
 
 				while (result.next()) {
-					isCorrect = true;
+					exists = true;
+					account = getAccount(account.getUsername(), account.getPassword());
 				}
 			}
 		} catch (final SQLException e) {
@@ -265,9 +266,18 @@ public class AccountManager {
 			connMan.closeConnection(connection, statement, result);
 		}
 
-		return isCorrect;
+		return exists;
 	}
 
+	/**
+	 * Checks what kind of privileges the given account has.
+	 * 0 - guest
+	 * 1 - client
+	 * 2 - vanzator
+	 * 3 - admin
+	 * @param account
+	 * @return int
+	 */
 	public int checkAccountPrivilege(final Account account) {
 		Connection connection = null;
 		PreparedStatement statement = null;

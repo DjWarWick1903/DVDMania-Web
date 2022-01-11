@@ -71,3 +71,4 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 main/
 connection.dat
+.attach_pid55013

@@ -69,4 +69,12 @@ public class Account {
 	public void setIdUtil(int idUtil) {
 		this.idUtil = idUtil;
 	}
+
+	@Override
+	public String toString() {
+		return "Account [idAcc=" + idAcc + ", username=" + username + ", password=" + password + ", data_creat="
+				+ data_creat + ", priv=" + priv + ", idUtil=" + idUtil + "]";
+	}
+	
+	
 }

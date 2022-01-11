@@ -202,7 +202,7 @@ public class StoreManager {
 			connection = connMan.openConnection();
 			final String sql = "SELECT m.id_mag, m.adresa, m.oras, m.tel FROM magazin m JOIN angajati a USING(id_mag) WHERE a.id_angaj=?";
 			statement = connection.prepareStatement(sql);
-			statement.setInt(1, employee.getIdEmp());
+			statement.setInt(1, employee.getId());
 			result = statement.executeQuery();
 
 			while (result.next()) {

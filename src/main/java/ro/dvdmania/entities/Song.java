@@ -34,4 +34,11 @@ public class Song {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+
+	@Override
+	public String toString() {
+		return "Song [idSong=" + idSong + ", nume=" + nume + ", duration=" + duration + "]";
+	}
+	
+	
 }

@@ -64,4 +64,12 @@ public class Stock {
 	public void setPrice(int price) {
 		this.price = price;
 	}
+
+	@Override
+	public String toString() {
+		return "Stock [idProduct=" + idProduct + ", movie=" + movie + ", game=" + game + ", album=" + album + ", store="
+				+ store + ", quantity=" + quantity + ", price=" + price + "]";
+	}
+	
+	
 }

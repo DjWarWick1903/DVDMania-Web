@@ -17,11 +17,11 @@
 		<hr>
 		<br>
 		
-		<c:if test="${errorMsg not empty}">
+		<c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		
-		<c:if test="${msg not empty}">
+		<c:if test="${not empty msg}">
 			<p class="msg" style="color:red">${msg}</p>
 		</c:if>
 		

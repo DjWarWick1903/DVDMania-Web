@@ -18,7 +18,7 @@
 		<hr>
 		<br>
 		
-		<c:if test="${errorMsg not empty}">
+		<c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		

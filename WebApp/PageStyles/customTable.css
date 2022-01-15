@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+.customTable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.customTable td, .orders th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.customTable tr:nth-child(even){background-color: papayawhip;}
+
+.customTable tr:hover {background-color: #ddd;}
+
+.customTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.imprumutat tr {
+	background-color: red;
+	color: white;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input.customTable[type=text] {
+	width: 100%;
+	padding: 5px 20px;
+	margin: 8px 0;
+	box-sizing: border-box;
+	outline: none;
+	border: 2px solid #4CAF50;
+	font-size: 15px;
+}
+
+.customTable input[type=text]:focus {
+	background-color: #C4EAC4;
+}
+
+.customTable input[type=number] {
+	width: 100%;
+	padding: 5px 20px;
+	margin: 8px 0;
+	box-sizing: border-box;
+	outline: none;
+	border: 2px solid #4CAF50;
+	font-size: 15px;
+}
+
+.customTable input[type=number]:focus {
+	background-color: #C4EAC4;
+}

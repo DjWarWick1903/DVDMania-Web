@@ -8,7 +8,7 @@
 		<title>DVDMania/MainPage</title>
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/PageStyles/DVDMania.css">
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/PageStyles/topnav.css">
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/PageStyles/mainPage.css">
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/PageStyles/customTable.css">
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/PageStyles/categories.css">
 	</head>
 	
@@ -21,12 +21,13 @@
 		
 		<div class="topnav">
 			<a class="active" href="/DVDMania-Web/MainPage">Home</a>
-			<a href="Orders.php">Orders</a>
+			<a href="/DVDMania-Web/Orders">Orders</a>
 			<a href="Products.php">Products</a>
 			<a href="Customers.php">Customers</a>
 			<a href="Employees.php">Employees</a>
 			<a href="Stores.php">Stores</a>
-			<a class="returnal" href="Backend/Logout.php">Logout</a>
+			
+			<a class="returnal" href="/DVDMania-Web/Login"><c:out value="${not empty account ? 'Logout' : 'Login'}"/></a>
 	    </div>
 		
 		<hr>
@@ -43,12 +44,14 @@
 			<div class="search">
 				<br>
 				<form action="/DVDMania-Web/MainPage" method="GET">
+					<label for="storeSelection" style="color:white">Oras:</label>
 					<select name="storeSelection">
 						<c:forEach var="store" items="${sessionScope.storeList}">
 							<option value="${store.getOras()}"<c:if test="${sessionScope.storeSelection eq store.getOras()}"><c:out value="selected"/></c:if>>${store.getOras()}</option>
 						</c:forEach>
 					</select>
 					
+					<label for="categorySelection" style="color:white">Categorie:</label>
 					<select name="categorySelection">
 						<c:forEach var="category" items="${sessionScope.categoryList}">
 							<option value="${category}" <c:if test="${sessionScope.categorySelection eq category}"><c:out value="selected"/></c:if>>${category}</option>
@@ -66,7 +69,11 @@
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		
-		<table class="products">
+		<c:if test="${not empty msg}">
+			<p class="msg" style="color:green">${msg}</p>
+		</c:if>
+		
+		<table class="customTable">
 			<c:choose>
 				<c:when test="${sessionScope.productSelection eq 'Filme'}">
 					<tr>
@@ -175,7 +182,7 @@
 				
 				<c:when test="${sessionScope.productSelection eq 'Melodii'}">
 					<tr>
-						<th>Trupa</th>
+						<th>Artist</th>
 						<th>Titlu album</th>
 						<th>Nume melodie</th>
 						<th>Durata (secunde)</th>

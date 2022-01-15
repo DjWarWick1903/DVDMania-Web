@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+.clienti {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.clienti td, .clienti th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.clienti tr:nth-child(even){background-color: papayawhip;}
+
+.clienti tr:hover {background-color: #ddd;}
+
+.clienti th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}

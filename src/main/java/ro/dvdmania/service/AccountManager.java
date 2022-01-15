@@ -175,7 +175,7 @@ public class AccountManager {
 		PreparedStatement statement = null;
 		int newKey = 0;
 
-		final boolean exists = checkAccountExists(account);
+		final boolean exists = checkAccountExists(account.getUsername(), account.getPassword());
 
 		if (!exists) {
 			try {
@@ -210,7 +210,7 @@ public class AccountManager {
 		PreparedStatement statement = null;
 		int newKey = 0;
 
-		final boolean exists = checkAccountExists(account);
+		final boolean exists = checkAccountExists(account.getUsername(), account.getPassword());
 
 		if (!exists) {
 			try {
@@ -240,7 +240,7 @@ public class AccountManager {
 		return newKey;
 	}
 
-	public boolean checkAccountExists(Account account) {
+	public boolean checkAccountExists(final String username, final String password) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -251,13 +251,12 @@ public class AccountManager {
 			if (connection != null) {
 				final String sql = "SELECT util, parola FROM conturi WHERE util = ? AND parola = ?";
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, account.getUsername());
-				statement.setString(2, account.getPassword());
+				statement.setString(1, username);
+				statement.setString(2, password);
 				result = statement.executeQuery();
 
 				while (result.next()) {
 					exists = true;
-					account = getAccount(account.getUsername(), account.getPassword());
 				}
 			}
 		} catch (final SQLException e) {
@@ -273,7 +272,7 @@ public class AccountManager {
 	 * Checks what kind of privileges the given account has.
 	 * 0 - guest
 	 * 1 - client
-	 * 2 - vanzator
+	 * 2 - employee
 	 * 3 - admin
 	 * @param account
 	 * @return int

@@ -55,7 +55,7 @@ public class OrderManager {
 		return results;
 	}
 
-	public int checkInOrder(final Stock stock, final Client client, final LocalDate returnDate) {
+	public int checkInOrder(final Stock stock, final Client client) {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -63,20 +63,18 @@ public class OrderManager {
 
 		try {
 			connection = connMan.openConnection();
-			String sql = "UPDATE imprumuturi SET data_ret=SYSDATE() WHERE id_prod=? AND id_cl=? AND data_imp=?";
+			String sql = "UPDATE imprumuturi SET data_ret=SYSDATE() WHERE id_prod=? AND id_cl=?";
 			statement = connection.prepareStatement(sql);
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
-			statement.setObject(3, returnDate);
 			rowsUpdated = statement.executeUpdate();
 			statement.close();
 
 			if (rowsUpdated > 0) {
-				sql = "SELECT DATEDIFF(data_ret, data_imp) FROM imprumuturi WHERE id_prod=? AND id_cl=? AND data_imp=?";
+				sql = "SELECT DATEDIFF(data_ret, data_imp) FROM imprumuturi WHERE id_prod=? AND id_cl=?";
 				statement = connection.prepareStatement(sql);
 				statement.setInt(1, stock.getIdProduct());
 				statement.setInt(2, client.getId());
-				statement.setObject(3, returnDate);
 				result = statement.executeQuery();
 
 				while (result.next()) {

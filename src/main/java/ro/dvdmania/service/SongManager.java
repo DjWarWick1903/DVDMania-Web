@@ -79,6 +79,28 @@ public class SongManager {
 
 		return rowsInserted;
 	}
+	
+	public int updateSong(final Song song) {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		int rowsUpdated = 0;
+
+		try {
+			connection = connMan.openConnection();
+			final String sql = "UPDATE dvdmania.muzica set nume=?, durata=? WHERE id_muzica=?";
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, song.getNume());
+			statement.setInt(2, song.getDuration());
+			statement.setInt(3, song.getIdSong());
+			rowsUpdated = statement.executeUpdate();
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connMan.closeConnection(connection, statement);
+		}
+
+		return rowsUpdated;
+	}
 
 	public String[] songToRow(final Song song) {
 		final String[] row = new String[3];

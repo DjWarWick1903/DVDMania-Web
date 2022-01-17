@@ -20,10 +20,15 @@
 		<div class="topnav">
 			<a href="/DVDMania-Web/MainPage">Home</a>
 			<a class="active" href="/DVDMania-Web/Orders">Orders</a>
-			<a href="Products.php">Products</a>
-			<a href="Customers.php">Customers</a>
-			<a href="Employees.php">Employees</a>
-			<a href="Stores.php">Stores</a>
+			<c:if test="${not empty account and account.priv ne 1}">
+				<a href="/DVDMania-Web/Products">Products</a>
+				<a href="Customers.php">Customers</a>
+				<a href="Stores.php">Stores</a>
+			</c:if>
+			
+			<c:if test="${not empty account and account.priv ne 1 and account.priv ne 2}">
+				<a href="Employees.php">Employees</a>
+			</c:if>
 			
 			<a class="returnal" href="/DVDMania-Web/Login">Logout</a>
 	    </div>

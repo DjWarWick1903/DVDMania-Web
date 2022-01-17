@@ -5,6 +5,7 @@ public class Song {
 	private String nume;
 	private int duration;
 
+	public Song() {}
 	public Song(int idSong, String nume, int duration) {
 		this.idSong = idSong;
 		this.nume = nume;

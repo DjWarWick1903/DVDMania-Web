@@ -841,6 +841,32 @@ public class StockManager {
 
 		return stock;
 	}
+	
+	public int checkMovieTotalStock(final Movie movie, final Store store) {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+		int stock = -1;
+
+		try {
+			connection = connMan.openConnection();
+			final String sql = "SELECT cant FROM produse WHERE id_film=? AND id_mag=?";
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, movie.getIdMovie());
+			statement.setInt(2, store.getId());
+			result = statement.executeQuery();
+
+			while (result.next()) {
+				stock = result.getInt("cant");
+			}
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connMan.closeConnection(connection, statement, result);
+		}
+
+		return stock;
+	}
 
 	public int checkGameStock(final Game game) {
 		Connection connection = null;
@@ -902,6 +928,32 @@ public class StockManager {
 
 		return stock;
 	}
+	
+	public int checkGameTotalStock(final Game game, final Store store) {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+		int stock = -1;
+
+		try {
+			connection = connMan.openConnection();
+			final String sql = "SELECT cant FROM produse WHERE id_joc=? AND id_mag=?";
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, game.getIdGame());
+			statement.setInt(2, store.getId());
+			result = statement.executeQuery();
+
+			while (result.next()) {
+				stock = result.getInt("cant");
+			}
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connMan.closeConnection(connection, statement, result);
+		}
+
+		return stock;
+	}
 
 	public int checkAlbumStock(final Album album) {
 		Connection connection = null;
@@ -954,6 +1006,32 @@ public class StockManager {
 				final int activeOrders = orderMan.getActiveOrders(idProd, store.getId());
 
 				stock = quantity - activeOrders;
+			}
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connMan.closeConnection(connection, statement, result);
+		}
+
+		return stock;
+	}
+	
+	public int checkAlbumTotalStock(final Album album, final Store store) {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+		int stock = -1;
+
+		try {
+			connection = connMan.openConnection();
+			final String sql = "SELECT cant FROM produse WHERE id_album=? AND id_mag=?";
+			statement = connection.prepareStatement(sql);
+			statement.setInt(1, album.getIdAlbum());
+			statement.setInt(2, store.getId());
+			result = statement.executeQuery();
+
+			while (result.next()) {
+				stock = result.getInt("cant");
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();

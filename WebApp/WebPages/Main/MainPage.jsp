@@ -49,14 +49,14 @@
 			<div class="search">
 				<br>
 				<form action="/DVDMania-Web/MainPage" method="GET">
-					<label for="storeSelection" style="color:white">Oras:</label>
+					<label for="storeSelection" style="color:green">Oras:</label>
 					<select name="storeSelection">
 						<c:forEach var="store" items="${sessionScope.storeList}">
 							<option value="${store.getOras()}"<c:if test="${sessionScope.storeSelection eq store.getOras()}"><c:out value="selected"/></c:if>>${store.getOras()}</option>
 						</c:forEach>
 					</select>
 					
-					<label for="categorySelection" style="color:white">Categorie:</label>
+					<label for="categorySelection" style="color:green">Categorie:</label>
 					<select name="categorySelection">
 						<c:forEach var="category" items="${sessionScope.categoryList}">
 							<option value="${category}" <c:if test="${sessionScope.categorySelection eq category}"><c:out value="selected"/></c:if>>${category}</option>

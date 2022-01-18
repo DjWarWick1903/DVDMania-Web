@@ -212,7 +212,7 @@ public class StoreManager {
 				final String tel = result.getString(4);
 
 				store = new Store(id, adress, city, tel);
-				employee.setIdMag(id);
+				employee.setStore(store);
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();

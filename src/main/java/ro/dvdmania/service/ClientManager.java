@@ -145,7 +145,7 @@ public class ClientManager {
 
 		try {
 			connection = connMan.openConnection();
-			final String sql = "UPDATE dvdmania.clienti SET nume=?, pren=?, adresa=?, oras=?, datan=?, cnp=?, tel=?, email=?, loialitate=? WHERE id_cl=?";
+			final String sql = "UPDATE dvdmania.clienti SET nume=?, pren=?, adresa=?, oras=?, datan=?, cnp=?, tel=?, email=? WHERE id_cl=?";
 
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, client.getNume());
@@ -156,8 +156,7 @@ public class ClientManager {
 			statement.setString(6, client.getCnp());
 			statement.setString(7, client.getTel());
 			statement.setString(8, client.getEmail());
-			statement.setInt(9, client.getLoialitate());
-			statement.setInt(10, client.getId());
+			statement.setInt(9, client.getId());
 			rowsUpdated = statement.executeUpdate();
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -208,23 +207,5 @@ public class ClientManager {
 		}
 
 		return rowsUpdated;
-	}
-
-	public String[] clientToRow(final Client client) {
-		final String[] row = new String[12];
-		row[0] = client.getId() + "";
-		row[1] = client.getNume();
-		row[2] = client.getPrenume();
-		row[3] = client.getAdresa();
-		row[4] = client.getOras();
-		row[5] = client.getDatan().toString();
-		row[6] = client.getCnp();
-		row[7] = client.getTel();
-		row[8] = client.getEmail();
-		row[9] = client.getLoialitate() + "";
-		row[10] = client.getAccount().getUsername();
-		row[11] = client.getAccount().getPassword();
-
-		return row;
 	}
 }

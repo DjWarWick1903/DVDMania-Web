@@ -6,15 +6,16 @@ public class Employee extends Person {
 	private String functie;
 	private int salariu;
 	private boolean activ;
-	private int idMag;
+	private Store store;
 
 	public Employee() {
 
 	}
 
 	public Employee(final int id, final String nume, final String prenume, final String adresa, final String oras, final LocalDate datan, final String cnp,
-			final String telefon, final String email, final String functie, final int salariu, final boolean activ, final int idMag) {
+			final String telefon, final String email, final String functie, final int salariu, final boolean activ) {
 		setId(id);
+		setNume(nume);
 		setPrenume(prenume);
 		setAdresa(adresa);
 		setOras(oras);
@@ -25,7 +26,6 @@ public class Employee extends Person {
 		this.functie = functie;
 		this.salariu = salariu;
 		this.activ = activ;
-		this.idMag = idMag;
 	}
 
 	public String getFunctie() {
@@ -52,11 +52,11 @@ public class Employee extends Person {
 		this.activ = activ;
 	}
 
-	public int getIdMag() {
-		return idMag;
+	public Store getStore() {
+		return store;
 	}
 
-	public void setIdMag(final int idMag) {
-		this.idMag = idMag;
+	public void setStore(Store store) {
+		this.store = store;
 	}
 }

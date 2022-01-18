@@ -25,12 +25,12 @@
 			<a href="/DVDMania-Web/Orders">Orders</a>
 			<c:if test="${not empty account and account.priv ne 1}">
 				<a class="active" href="/DVDMania-Web/Products">Products</a>
-				<a href="Customers.php">Customers</a>
-				<a href="Stores.php">Stores</a>
+				<a href="/DVDMania-Web/Customers">Customers</a>
+				<a href="/DVDMania-Web/Stores">Stores</a>
 			</c:if>
 			
 			<c:if test="${not empty account and account.priv ne 1 and account.priv ne 2}">
-				<a href="Employees.php">Employees</a>
+				<a href="/DVDMania-Web/Employees">Employees</a>
 			</c:if>
 			
 			<a class="returnal" href="/DVDMania-Web/Login"><c:out value="${not empty account ? 'Logout' : 'Login'}"/></a>

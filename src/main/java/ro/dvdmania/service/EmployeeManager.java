@@ -45,7 +45,7 @@ public class EmployeeManager {
 			statement.setString(9, employee.getFunctie());
 			statement.setInt(10, employee.getSalariu());
 			statement.setString(11, "Activ");
-			statement.setInt(12, employee.getIdMag());
+			statement.setInt(12, employee.getStore().getId());
 
 			final int rowsInserted = statement.executeUpdate();
 			if (rowsInserted != 0) {
@@ -73,7 +73,7 @@ public class EmployeeManager {
 		try {
 			connection = connMan.openConnection();
 			final String sql = "UPDATE dvdmania.angajati SET nume=?, pren=?, adresa=?, oras=?, "
-					+ "datan=?, cnp=?, tel=?, email=?, functie=?, salariu=?, activ=?, " + "id_mag=? WHERE id_angaj=?";
+					+ "datan=?, cnp=?, tel=?, email=?, functie=?, salariu=?, activ=?, id_mag=? WHERE id_angaj=?";
 
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, employee.getNume());
@@ -91,8 +91,8 @@ public class EmployeeManager {
 			} else {
 				statement.setString(11, "Inactiv");
 			}
-			statement.setInt(12, employee.getIdMag());
-			statement.setInt(13, employee.getIdMag());
+			statement.setInt(12, employee.getStore().getId());
+			statement.setInt(13, employee.getId());
 
 			rowsInserted = statement.executeUpdate();
 		} catch (final SQLException e) {
@@ -132,7 +132,9 @@ public class EmployeeManager {
 				final int salariu = result.getInt("salariu");
 				final int idMag = result.getInt("id_mag");
 
-				emp = new Employee(id, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true,idMag);
+				final StoreManager storeMan = StoreManager.getInstance();
+				emp = new Employee(id, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true);
+				emp.setStore(storeMan.getStoreById(idMag));
 				final AccountManager accMan = AccountManager.getInstance();
 				final Account account = accMan.getEmployeeAccount(emp);
 				emp.setAccount(account);
@@ -173,8 +175,10 @@ public class EmployeeManager {
 				final String functie = result.getString("functie");
 				final int salariu = result.getInt("salariu");
 				final int idMag = result.getInt("id_mag");
-				final Employee employee = new Employee(idEmp, nume, prenume, adresa, oras, datan, cnp, telefon, email,
-						functie, salariu, true, idMag);
+				
+				final StoreManager storeMan = StoreManager.getInstance();
+				final Employee employee = new Employee(idEmp, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true);
+				employee.setStore(storeMan.getStoreById(idMag));
 
 				final AccountManager accMan = AccountManager.getInstance();
 				final Account account = accMan.getEmployeeAccount(employee);
@@ -240,27 +244,5 @@ public class EmployeeManager {
 		}
 
 		return email;
-	}
-
-	public String[] employeeToRow(final Employee employee) {
-		final String[] row = new String[14];
-		row[0] = employee.getId() + "";
-		row[1] = employee.getNume();
-		row[2] = employee.getPrenume();
-		row[3] = employee.getAdresa();
-		row[4] = employee.getOras();
-		row[5] = employee.getDatan().toString();
-		row[6] = employee.getCnp();
-		row[7] = employee.getTel();
-		row[8] = employee.getEmail();
-		row[9] = employee.getFunctie();
-		row[10] = employee.getSalariu() + "";
-		final StoreManager storeMan = StoreManager.getInstance();
-		final Store store = storeMan.getStoreById(employee.getIdMag());
-		row[11] = store.getOras();
-		row[12] = employee.getAccount().getUsername();
-		row[13] = employee.getAccount().getPassword();
-
-		return row;
 	}
 }

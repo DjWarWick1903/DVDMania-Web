@@ -19,10 +19,10 @@
 		
 		<div class="topnav">
 			<a href="/DVDMania-Web/MainPage">Home</a>
-			<a class="active" href="/DVDMania-Web/Orders">Orders</a>
+			<a href="/DVDMania-Web/Orders">Orders</a>
 			<c:if test="${not empty account and account.priv ne 1}">
 				<a href="/DVDMania-Web/Products">Products</a>
-				<a href="/DVDMania-Web/Customers">Customers</a>
+				<a class="active" href="/DVDMania-Web/Customers">Customers</a>
 				<a href="/DVDMania-Web/Stores">Stores</a>
 			</c:if>
 			
@@ -35,8 +35,8 @@
 	    
 	    <c:if test="${not empty account and account.priv ne 1}">
 		    <div class="subnav">
-		    	<a href="/DVDMania-Web/Orders/GetClients">New order</a>
-		    	<a class="active" href="/DVDMania-Web/Orders/GetOrders">Return order</a>
+		    	<a href="/DVDMania-Web/Customers">Edit customers</a>
+		    	<a class="active" href="/DVDMania-Web/Customers/ToNewCustomer">New customer</a>
 		    </div>
 	    </c:if>
 	    
@@ -48,25 +48,29 @@
 			<tr>
 				<th>Nume</th>
 				<th>Prenume</th>
+				<th>Adresa</th>
+				<th>Oras</th>
+				<th>Data nasterii (dd/MM/yyyy)</th>
 				<th>CNP</th>
-				<th>ID stoc</th>
-				<th>Data imprumutului</th>
+				<th>Telefon</th>
+				<th>Email</th>
+				<th>Username</th>
+				<th>Password</th>
 			</tr>
 			
-			<c:forEach var="order" items="${orders}">
-				<tr <c:if test="${empty order.returnDate}"> class="imprumutat" </c:if>>
-					<td>${order.client.nume}</td>
-					<td>${order.client.prenume}</td>
-					<td>${order.client.cnp}</td>
-					<td>${order.stock.idProduct}</td>
-					<td>${order.borrowDate}</td>
-					<form action="/DVDMania-Web/Orders/ReturnOrder" method="POST">
-						<td><input type="submit" value="Returneaza"></td>
-						<input type="hidden" name="idStock" value="${order.stock.idProduct}">
-						<input type="hidden" name="idClient" value="${order.client.id}">
-					</form>
-				</tr>
-			</c:forEach>
+			<form action="/DVDMania-Web/Customers/NewCustomer" method="POST">
+				<td><input type="text" name="nume"></td>
+				<td><input type="text" name="prenume"></td>
+				<td><input type="text" name="adresa"></td>
+				<td><input type="text" name="oras"></td>
+				<td><input type="text" name="datan"></td>
+				<td><input type="text" name="cnp"></td>
+				<td><input type="text" name="tel"></td>
+				<td><input type="text" name="email"></td>
+				<td><input type="text" name="username"></td>
+				<td><input type="text" name="password"></td>
+				<td><input type="submit" value="Insert"></td>
+			</form>
 		</table>
 	</body>
 </html>

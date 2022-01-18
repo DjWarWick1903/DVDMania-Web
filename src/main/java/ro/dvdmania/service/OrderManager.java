@@ -97,8 +97,7 @@ public class OrderManager {
 		LocalDate date = null;
 
 		final StockManager stockMan = StockManager.getInstance();
-		final Store store = new Store();
-		store.setId(employee.getIdMag());
+		final Store store = employee.getStore();
 		final Stock stock = stockMan.getMovieStock(movie, store);
 
 		try {
@@ -108,7 +107,7 @@ public class OrderManager {
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
 			statement.setInt(3, employee.getId());
-			statement.setInt(4, employee.getIdMag());
+			statement.setInt(4, employee.getStore().getId());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
 			statement.close();
@@ -136,8 +135,7 @@ public class OrderManager {
 		LocalDate date = null;
 
 		final StockManager stockMan = StockManager.getInstance();
-		final Store store = new Store();
-		store.setId(employee.getIdMag());
+		final Store store = employee.getStore();
 		final Stock stock = stockMan.getGameStock(game, store);
 
 		try {
@@ -147,7 +145,7 @@ public class OrderManager {
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
 			statement.setInt(3, employee.getId());
-			statement.setInt(4, employee.getIdMag());
+			statement.setInt(4, employee.getStore().getId());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
 			statement.close();
@@ -175,8 +173,7 @@ public class OrderManager {
 		LocalDate date = null;
 
 		final StockManager stockMan = StockManager.getInstance();
-		final Store store = new Store();
-		store.setId(employee.getIdMag());
+		final Store store = employee.getStore();
 		final Stock stock = stockMan.getAlbumStock(album, store);
 
 		try {
@@ -186,7 +183,7 @@ public class OrderManager {
 			statement.setInt(1, stock.getIdProduct());
 			statement.setInt(2, client.getId());
 			statement.setInt(3, employee.getId());
-			statement.setInt(4, employee.getIdMag());
+			statement.setInt(4, employee.getStore().getId());
 			statement.setInt(5, stock.getPrice());
 			statement.executeUpdate();
 			statement.close();

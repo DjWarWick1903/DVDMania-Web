@@ -19,7 +19,7 @@
 		
 		<div class="topnav">
 			<a href="/DVDMania-Web/MainPage">Home</a>
-			<a class="active" href="/DVDMania-Web/Orders">Orders</a>
+			<a href="/DVDMania-Web/Orders">Orders</a>
 			<c:if test="${not empty account and account.priv ne 1}">
 				<a href="/DVDMania-Web/Products">Products</a>
 				<a href="/DVDMania-Web/Customers">Customers</a>
@@ -27,7 +27,7 @@
 			</c:if>
 			
 			<c:if test="${not empty account and account.priv ne 1 and account.priv ne 2}">
-				<a href="/DVDMania-Web/Employees">Employees</a>
+				<a class="active" href="/DVDMania-Web/Employees">Employees</a>
 			</c:if>
 			
 			<a class="returnal" href="/DVDMania-Web/Login">Logout</a>
@@ -35,8 +35,8 @@
 	    
 	    <c:if test="${not empty account and account.priv ne 1}">
 		    <div class="subnav">
-		    	<a href="/DVDMania-Web/Orders/GetClients">New order</a>
-		    	<a class="active" href="/DVDMania-Web/Orders/GetOrders">Return order</a>
+		    	<a class="active" href="/DVDMania-Web/Employees">Edit employee</a>
+		    	<a href="/DVDMania-Web/Employees/ToNewEmployee">New employee</a>
 		    </div>
 	    </c:if>
 	    
@@ -44,26 +44,50 @@
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		
+		<c:if test="${not empty msg}">
+			<p class="msg" style="color:green">${msg}</p>
+		</c:if>
+		
 		<table class="customTable">
 			<tr>
+				<th>ID</th>
 				<th>Nume</th>
 				<th>Prenume</th>
+				<th>Adresa</th>
+				<th>Oras</th>
+				<th>Data nasterii</th>
 				<th>CNP</th>
-				<th>ID stoc</th>
-				<th>Data imprumutului</th>
+				<th>Telefon</th>
+				<th>Email</th>
+				<th>Functie</th>
+				<th>Salariu</th>
+				<th>Adresa magazin</th>
+				<th>Username</th>
+				<th>Password</th>
 			</tr>
 			
-			<c:forEach var="order" items="${orders}">
-				<tr <c:if test="${empty order.returnDate}"> class="imprumutat" </c:if>>
-					<td>${order.client.nume}</td>
-					<td>${order.client.prenume}</td>
-					<td>${order.client.cnp}</td>
-					<td>${order.stock.idProduct}</td>
-					<td>${order.borrowDate}</td>
-					<form action="/DVDMania-Web/Orders/ReturnOrder" method="POST">
-						<td><input type="submit" value="Returneaza"></td>
-						<input type="hidden" name="idStock" value="${order.stock.idProduct}">
-						<input type="hidden" name="idClient" value="${order.client.id}">
+			<c:forEach var="employee" items="${employees}">
+				<tr>
+					<c:set var="key" value="${employee.key}"/>
+					<c:set var="value" value="${employee.value}"/>
+					
+					<td>${key.getId()}</td>
+					<td>${key.getNume()}</td>
+					<td>${key.getPrenume()}</td>
+					<td>${key.getAdresa()}</td>
+					<td>${key.getOras()}</td>
+					<td>${key.getDatan()}</td>
+					<td>${key.getCnp()}</td>
+					<td>${key.getTel()}</td>
+					<td>${key.getEmail()}</td>
+					<td>${key.getFunctie()}</td>
+					<td>${key.getSalariu()}</td>
+					<td>${key.getStore().getOras()}</td>
+					<td>${value.getUsername()}</td>
+					<td>${value.getPassword()}</td>
+					<form action="/DVDMania-Web/Employees/ToEditEmployee" method="POST">
+						<input type="hidden" name="idEmp" value="${key.getId()}">
+						<td><input type="submit" value="Edit"></td>
 					</form>
 				</tr>
 			</c:forEach>

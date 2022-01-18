@@ -40,6 +40,8 @@
 		    </div>
 	    </c:if>
 	    
+	    <hr><br>
+	    
 	    <c:if test="${not empty errorMsg}">
 			<p class="error">${errorMsg}</p>
 		</c:if>

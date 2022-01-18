@@ -55,7 +55,6 @@
 			<c:choose>
 				<c:when test="${sessionScope.productSelection eq 'Filme'}">
 					<tr>
-						<th>ID</th>
 						<th>Titlu</th>
 						<th>Actor principal</th>
 						<th>Director</th>
@@ -70,7 +69,7 @@
 					<form action="/DVDMania-Web/Products/EditProduct" method="POST">
 						<c:set var="movie" value="${movieStock.getMovie()}"/>
 						<tr>
-							<td><input type="number" name="idMovie" disabled value="${movie.getIdMovie()}"></td>
+							<input type="hidden" name="idMovie" value="${movie.getIdMovie()}">
 							<td><input type="text" name="title" value="${movie.getTitle()}"></td>
 							<td><input type="text" name="actPr" value="${movie.getMainActor()}"></td>
 							<td><input type="text" name="director" value="${movie.getDirector()}"></td>
@@ -87,7 +86,6 @@
 				
 				<c:when test="${sessionScope.productSelection eq 'Jocuri'}">
 					<tr>
-						<th>ID</th>
 						<th>Titlu</th>
 						<th>Platforma</th>
 						<th>Developer</th>
@@ -102,7 +100,7 @@
 					<form action="/DVDMania-Web/Products/EditProduct" method="POST">
 						<c:set var="game" value="${gameStock.getGame()}"/>
 						<tr>
-							<td><input type="number" name="idGame" disabled value="${game.getIdGame()}"></td>
+							<input type="hidden" name="idGame" value="${game.getIdGame()}">
 							<td><input type="text" name="title" value="${game.getTitle()}"></td>
 							<td><input type="text" name="platform" value="${game.getPlatform()}"></td>
 							<td><input type="text" name="developer" value="${game.getDeveloper()}"></td>
@@ -119,7 +117,6 @@
 				
 				<c:when test="${sessionScope.productSelection eq 'Albume'}">
 					<tr>
-						<th>ID</th>
 						<th>Trupa</th>
 						<th>Titlu</th>
 						<th>Casa discuri</th>
@@ -133,7 +130,7 @@
 					<form action="/DVDMania-Web/Products/EditProduct" method="POST">
 						<c:set var="album" value="${albumStock.getAlbum()}"/>
 						<tr>
-							<td><input type="number" name="idAlbum" disabled value="${album.getIdAlbum()}"></td>
+							<input type="hidden" name="idAlbum" value="${album.getIdAlbum()}">
 							<td><input type="text" name="artist" value="${album.getArtist()}"></td>
 							<td><input type="text" name="title" value="${album.getTitle()}"></td>
 							<td><input type="text" name="producer" value="${album.getProducer()}"></td>
@@ -149,14 +146,13 @@
 				
 				<c:when test="${sessionScope.productSelection eq 'Melodii'}">
 					<tr>
-						<th>ID</th>
 						<th>Nume melodie</th>
 						<th>Durata (secunde)</th>
 					</tr>
 					
 					<form action="/DVDMania-Web/Products/EditProduct" method="POST">
 						<tr>
-							<td><input type="number" name="idSong" disabled value="${song.getIdSong()}"></td>
+							<input type="hidden" name="idSong" value="${song.getIdSong()}">
 							<td><input type="text" name="name" value="${song.getNume()}"></td>
 							<td><input type="number" name="duration" value="${song.getDuration()}"></td>
 							<td><input type="submit" name="EditButton" value="Save"></td>

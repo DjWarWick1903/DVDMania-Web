@@ -43,7 +43,7 @@
 		<hr>
 		
 		<div class="categories">
-			<form action="/DVDMania-Web/Products" method="GET">
+			<form action="/DVDMania-Web/Products/ToNewProduct" method="GET">
 				<input <c:if test="${sessionScope.productSelection eq 'Filme'}"> <c:out value="class=selected"/> </c:if> type="submit" value="Filme" name="productSelection">
 				<input <c:if test="${sessionScope.productSelection eq 'Jocuri'}"> <c:out value="class=selected"/> </c:if> type="submit" value="Jocuri" name="productSelection">
 				<input <c:if test="${sessionScope.productSelection eq 'Albume'}"> <c:out value="class=selected"/> </c:if> type="submit" value="Albume" name="productSelection">
@@ -154,20 +154,23 @@
 						<th>Durata (secunde)</th>
 					</tr>
 					
-					<c:forEach var="album" items="${albumList}">
-						<form action="/DVDMania-Web/Products/NewProduct" method="POST">
-							<tr>
-								<td>
-									<select name="titluri">
+					
+					<form action="/DVDMania-Web/Products/NewProduct" method="POST">
+						<tr>
+							
+							<td>
+								<select name="titluri">
+									<c:forEach var="album" items="${albumList}">
 										<option value="${album}">${album}</option>
-									</select>
-								</td>
-								<td><input type="text" name="nume"></td>
-								<td><input type="number" name="durata"></td>
-								<td><input type="submit" value="Insert"></td>
-							</tr>
-						</form>
-					</c:forEach>
+									</c:forEach>
+								</select>
+							</td>
+							
+							<td><input type="text" name="nume"></td>
+							<td><input type="number" name="durata"></td>
+							<td><input type="submit" value="Insert"></td>
+						</tr>
+					</form>
 				</c:when>
 			</c:choose>
 		</table>

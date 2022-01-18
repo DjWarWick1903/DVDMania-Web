@@ -27,7 +27,7 @@
 			</c:if>
 			
 			<c:if test="${not empty account and account.priv ne 1 and account.priv ne 2}">
-				<a href="Employees.php">Employees</a>
+				<a href="/DVDMania-Web/Employees">Employees</a>
 			</c:if>
 			
 			<a class="returnal" href="/DVDMania-Web/Login">Logout</a>
@@ -39,6 +39,8 @@
 		    	<a class="active" href="/DVDMania-Web/Stores/ToNewStore">New store</a>
 		    </div>
 	    </c:if>
+	    
+	    <hr><br>
 	    
 	    <c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>

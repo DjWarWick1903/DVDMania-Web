@@ -35,10 +35,12 @@
 	    
 	    <c:if test="${not empty account and account.priv ne 1}">
 		    <div class="subnav">
-		    	<a class="active" href="/DVDMania-Web/Employees">Edit employee</a>
-		    	<a href="/DVDMania-Web/Employees/ToNewEmployee">New employee</a>
+		    	<a href="/DVDMania-Web/Employees">Edit employee</a>
+		    	<a class="active" href="/DVDMania-Web/Employees/ToNewEmployee">New employee</a>
 		    </div>
 	    </c:if>
+	    
+	    <hr><br>
 	    
 	    <c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>

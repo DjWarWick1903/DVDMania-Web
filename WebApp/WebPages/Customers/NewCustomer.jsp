@@ -39,7 +39,7 @@
 		    	<a class="active" href="/DVDMania-Web/Customers/ToNewCustomer">New customer</a>
 		    </div>
 	    </c:if>
-	    
+	    <hr><br>
 	    <c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>

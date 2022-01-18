@@ -39,7 +39,7 @@
 		    	<a href="/DVDMania-Web/Employees/ToNewEmployee">New employee</a>
 		    </div>
 	    </c:if>
-	    
+	    <hr><br>
 	    <c:if test="${not empty errorMsg}">
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>

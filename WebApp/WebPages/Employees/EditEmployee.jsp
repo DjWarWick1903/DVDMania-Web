@@ -48,36 +48,51 @@
 			<p class="msg" style="color:green">${msg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>Nume</th>
-				<th>Prenume</th>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Data nasterii(yyyy-MM-dd)</th>
-				<th>CNP</th>
-				<th>Telefon</th>
-				<th>Email</th>
-				<th>Functie</th>
-				<th>Salariu</th>
-				<th>Adresa magazin</th>
-				<th>Username</th>
-				<th>Password</th>
-			</tr>
-			
-			<form action="/DVDMania-Web/Employees/EditEmployee" method="POST">
+		<form action="/DVDMania-Web/Employees/EditEmployee" method="POST">
+			<table class="customTable">
+				<input type="hidden" name="idEmp" value="${employee.getId()}">
 				<tr>
-					<input type="hidden" name="idEmp" value="${employee.getId()}">
+					<td>Nume</td>
 					<td><input type="text" name="nume" value="${employee.getNume()}"></td>
+				</tr>
+				<tr>
+					<td>Prenume</td>
 					<td><input type="text" name="prenume" value="${employee.getPrenume()}"></td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
 					<td><input type="text" name="adresa" value="${employee.getAdresa()}"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
 					<td><input type="text" name="oras" value="${employee.getOras()}"></td>
+				</tr>
+				<tr>
+					<td>Data nasterii(yyyy-MM-dd)</td>
 					<td><input type="text" name="datan" value="${employee.getDatan()}"></td>
+				</tr>
+				<tr>
+					<td>CNP</td>
 					<td><input type="number" name="cnp" value="${employee.getCnp()}"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
 					<td><input type="number" name="telefon" value="${employee.getTel()}"></td>
+				</tr>
+				<tr>
+					<td>Email</td>
 					<td><input type="text" name="email" value="${employee.getEmail()}"></td>
+				</tr>
+				<tr>
+					<td>Functie</td>
 					<td><input type="text" name="functie" value="${employee.getFunctie()}"></td>
+				</tr>
+				<tr>
+					<td>Salariu</td>
 					<td><input type="number" name="salariu" value="${employee.getSalariu()}"></td>
+				</tr>
+				<tr>
+					<td>Adresa magazin</td>
 					<td>
 						<select name="orasMag">
 							<c:forEach var="store" items="${storeList}">
@@ -85,11 +100,17 @@
 							</c:forEach>
 						</select>
 					</td>
-					<td><input type="text" name="username" value="${empAcc.getUsername()}"></td>
-					<td><input type="text" name="password" value="${empAcc.getPassword()}"></td>
-					<td><input type="submit" value="Edit"></td>
 				</tr>
-			</form>
-		</table>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" name="username" value="${empAcc.getUsername()}"></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="text" name="password" value="${empAcc.getPassword()}"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Edit">
+		</form>
 	</body>
 </html>

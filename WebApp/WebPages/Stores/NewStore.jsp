@@ -48,21 +48,22 @@
 			<p class="msg" style="color:green">${msg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Telefon</th>
-			</tr>
-			
-			<tr>
-				<form action="/DVDMania-Web/Stores/NewStore" method="POST">
+		<form action="/DVDMania-Web/Stores/NewStore" method="POST">
+			<table class="customTable">
+				<tr>
+					<td>Adresa</td>
 					<td><input type="text" name="adresa"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
 					<td><input type="text" name="oras"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
 					<td><input type="number" name="telefon"></td>
-					<td><input type="submit" value="Insert"></td>
-				</form>
-			</tr>
-		</table>
+				</tr>
+			</table>
+			<input type="submit" value="Insert">
+		</form>
 	</body>
 </html>

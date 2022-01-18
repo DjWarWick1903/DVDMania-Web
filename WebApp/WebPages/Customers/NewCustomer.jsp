@@ -44,33 +44,50 @@
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>Nume</th>
-				<th>Prenume</th>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Data nasterii (dd/MM/yyyy)</th>
-				<th>CNP</th>
-				<th>Telefon</th>
-				<th>Email</th>
-				<th>Username</th>
-				<th>Password</th>
-			</tr>
-			
-			<form action="/DVDMania-Web/Customers/NewCustomer" method="POST">
-				<td><input type="text" name="nume"></td>
-				<td><input type="text" name="prenume"></td>
-				<td><input type="text" name="adresa"></td>
-				<td><input type="text" name="oras"></td>
-				<td><input type="text" name="datan"></td>
-				<td><input type="text" name="cnp"></td>
-				<td><input type="text" name="tel"></td>
-				<td><input type="text" name="email"></td>
-				<td><input type="text" name="username"></td>
-				<td><input type="text" name="password"></td>
-				<td><input type="submit" value="Insert"></td>
-			</form>
-		</table>
+		<form action="/DVDMania-Web/Customers/NewCustomer" method="POST">
+			<table class="customTable">
+				<tr>
+					<td>Nume</td>
+					<td><input type="text"name="nume"></td>
+				</tr>
+				<tr>
+					<td>Prenume</td>
+					<td><input type="text" name="prenume"></td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
+					<td><input type="text" name="adresa"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
+					<td><input type="text" name="oras"></td>
+				</tr>
+				<tr>
+					<td>Data nasterii(yyyy-mm-dd)</td>
+					<td><input type="text" name="datan"></td>
+				</tr>
+				<tr>
+					<td>CNP</td>
+					<td><input type="number" name="cnp"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
+					<td><input type="number" name="tel"></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="email"></td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" name="username"></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="text" name="password"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Insert">
+		</form>
 	</body>
 </html>

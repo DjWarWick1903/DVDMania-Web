@@ -60,7 +60,7 @@
 			</tr>
 			
 			<c:forEach var="order" items="${orders}">
-				<tr <c:if test="${empty order.returnDate}"> class="imprumutat" </c:if>>
+				<tr>
 					<td>${order.client.nume}</td>
 					<td>${order.client.prenume}</td>
 					<td>${order.client.cnp}</td>

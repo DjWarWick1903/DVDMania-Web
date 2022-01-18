@@ -134,7 +134,8 @@ public class EmployeeManager {
 
 				final StoreManager storeMan = StoreManager.getInstance();
 				emp = new Employee(id, nume, prenume, adresa, oras, datan, cnp, telefon, email, functie, salariu, true);
-				emp.setStore(storeMan.getStoreById(idMag));
+				final Store store = storeMan.getStoreById(idMag);
+				emp.setStore(store);
 				final AccountManager accMan = AccountManager.getInstance();
 				final Account account = accMan.getEmployeeAccount(emp);
 				emp.setAccount(account);

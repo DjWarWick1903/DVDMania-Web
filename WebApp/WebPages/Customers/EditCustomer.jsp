@@ -44,35 +44,51 @@
 			<p class="error" style="color:red">${errorMsg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>ID</th>
-				<th>Nume</th>
-				<th>Prenume</th>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Data nasterii(yyyy-mm-dd)</th>
-				<th>CNP</th>
-				<th>Telefon</th>
-				<th>Email</th>
-				<th>Username</th>
-				<th>Password</th>
-			</tr>
-			
-			<form action="/DVDMania-Web/Customers/EditCustomer" method="POST">
-				<td><input type="hidden" value="${client.getId()}" name="idClient"></td>
-				<td><input type="text" value="${client.getNume()}" name="nume"></td>
-				<td><input type="text" value="${client.getPrenume()}" name="prenume"></td>
-				<td><input type="text" value="${client.getAdresa()}" name="adresa"></td>
-				<td><input type="text" value="${client.getOras()}" name="oras"></td>
-				<td><input type="text" value="${client.getDatan()}" name="datan"></td>
-				<td><input type="number" value="${client.getCnp()}" name="cnp"></td>
-				<td><input type="number" value="${client.getTel()}" name="tel"></td>
-				<td><input type="text" value="${client.getEmail()}" name="email"></td>
-				<td><input type="text" value="${customerAcc.getUsername()}" name="username"></td>
-				<td><input type="text" value="${customerAcc.getPassword()}" name="password"></td>
-				<td><input type="submit" value="Edit" name="EditCustomer"></td>
-			</form>
-		</table>
+		<form action="/DVDMania-Web/Customers/EditCustomer" method="POST">
+			<table class="customTable">
+				<input type="hidden" value="${client.getId()}" name="idClient">
+				<tr>
+					<td>Nume</td>
+					<td><input type="text" value="${client.getNume()}" name="nume"></td>
+				</tr>
+				<tr>
+					<td>Prenume</td>
+					<td><input type="text" value="${client.getPrenume()}" name="prenume"></td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
+					<td><input type="text" value="${client.getAdresa()}" name="adresa"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
+					<td><input type="text" value="${client.getOras()}" name="oras"></td>
+				</tr>
+				<tr>
+					<td>Data nasterii(yyyy-mm-dd)</td>
+					<td><input type="text" value="${client.getDatan()}" name="datan"></td>
+				</tr>
+				<tr>
+					<td>CNP</td>
+					<td><input type="number" value="${client.getCnp()}" name="cnp"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
+					<td><input type="number" value="${client.getTel()}" name="tel"></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" value="${client.getEmail()}" name="email"></td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" value="${customerAcc.getUsername()}" name="username"></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="text" value="${customerAcc.getPassword()}" name="password"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Edit">
+		</form>
 	</body>
 </html>

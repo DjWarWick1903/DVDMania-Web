@@ -48,47 +48,68 @@
 			<p class="msg" style="color:green">${msg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>Nume</th>
-				<th>Prenume</th>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Data nasterii(yyyy-MM-dd)</th>
-				<th>CNP</th>
-				<th>Telefon</th>
-				<th>Email</th>
-				<th>Functie</th>
-				<th>Salariu</th>
-				<th>Adresa magazin</th>
-				<th>Username</th>
-				<th>Password</th>
-			</tr>
-			
-			<form action="/DVDMania-Web/Employees/NewEmployee" method="POST">
+		<form action="/DVDMania-Web/Employees/NewEmployee" method="POST">
+			<table class="customTable">
 				<tr>
+					<td>Nume</td>
 					<td><input type="text" name="nume"></td>
+				</tr>
+				<tr>
+					<td>Prenume</td>
 					<td><input type="text" name="prenume"></td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
 					<td><input type="text" name="adresa"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
 					<td><input type="text" name="oras"></td>
+				</tr>
+				<tr>
+					<td>Data nasterii(yyyy-MM-dd)</td>
 					<td><input type="text" name="datan"></td>
+				</tr>
+				<tr>
+					<td>CNP</td>
 					<td><input type="number" name="cnp"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
 					<td><input type="number" name="telefon"></td>
+				</tr>
+				<tr>
+					<td>Email</td>
 					<td><input type="text" name="email"></td>
+				</tr>
+				<tr>
+					<td>Functie</td>
 					<td><input type="text" name="functie"></td>
+				</tr>
+				<tr>
+					<td>Salariu</td>
 					<td><input type="number" name="salariu"></td>
+				</tr>
+				<tr>
+					<td>Adresa magazin</td>
 					<td>
 						<select name="orasMag">
 							<c:forEach var="store" items="${storeList}">
-								<option value="${store}" <c:if test="${store eq employee.getStore().getOras()}"> selected </c:if>>
+								<option value="${store}">
 							</c:forEach>
 						</select>
 					</td>
-					<td><input type="text" name="username"></td>
-					<td><input type="text" name="password"></td>
-					<td><input type="submit" value="Save"></td>
 				</tr>
-			</form>
-		</table>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" name="username"></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="text" name="password"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Save">
+		</form>
 	</body>
 </html>

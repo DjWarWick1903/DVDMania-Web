@@ -67,3 +67,38 @@ input.customTable[type=text] {
 .customTable input[type=number]:focus {
 	background-color: #C4EAC4;
 }
+
+.customTable input[type=email] {
+	width: 100%;
+	padding: 5px 10px;
+	margin: 8px 0;
+	box-sizing: border-box;
+	outline: none;
+	border: 2px solid #4CAF50;
+	font-size: 15px;
+}
+
+.customTable input[type=email]:focus {
+	background-color: #C4EAC4;
+}
+
+.customTable input[type=password] {
+	width: 100%;
+	padding: 5px 10px;
+	margin: 8px 0;
+	box-sizing: border-box;
+	outline: none;
+	border: 2px solid #4CAF50;
+	font-size: 15px;
+}
+
+.customTable input[type=password]:focus {
+	background-color: #C4EAC4;
+}
+.customTable label {
+	width: 100%;
+	text-align: centre;
+	color: green;
+	font-size: 110%;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+}

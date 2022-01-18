@@ -48,23 +48,23 @@
 			<p class="msg" style="color:green">${msg}</p>
 		</c:if>
 		
-		<table class="customTable">
-			<tr>
-				<th>ID</th>
-				<th>Adresa</th>
-				<th>Oras</th>
-				<th>Telefon</th>
-			</tr>
-			
-			<tr>
-				<form action="/DVDMania-Web/Stores/EditStore" method="POST">
-					<td><input type="hidden" value="${store.getId()}" name="idStore"></td>
+		<form action="/DVDMania-Web/Stores/EditStore" method="POST">
+			<table class="customTable">
+				<input type="hidden" value="${store.getId()}" name="idStore">
+				<tr>
+					<td>Adresa</td>
 					<td><input type="text" value="${store.getAdresa()}" name="adresa"></td>
+				</tr>
+				<tr>
+					<td>Oras</td>
 					<td><input type="text" value="${store.getOras()}" name="oras"></td>
+				</tr>
+				<tr>
+					<td>Telefon</td>
 					<td><input type="number" value="${store.getTelefon()}" name="telefon"></td>
-					<td><input type="submit" value="Save"></td>
-				</form>
-			</tr>
-		</table>
+				</tr>
+			</table>
+			<input type="submit" value="Save">
+		</form>
 	</body>
 </html>
